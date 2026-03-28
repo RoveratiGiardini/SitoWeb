@@ -1,10 +1,19 @@
 import { config, fields, collection, singleton } from '@keystatic/core';
 
+const isProd = import.meta.env.PROD;
+
 export default config({
-  storage: {
-    kind: process.env.NODE_ENV === 'development' ? 'local' : 'github',
-    repo: { owner: 'tuo-username', name: 'tuo-repo-github' }
-  },
+  storage: isProd ? 
+      {
+        kind: 'github',
+        repo: {
+          owner: 'RoveratiGiardini',
+          name: 'SitoWeb',
+        },
+      }
+    : {
+        kind: 'local',
+      },
 
   // ════════════════════════════════════════════════════════
   // SINGLETON — una voce sola, modificabile dal CMS
