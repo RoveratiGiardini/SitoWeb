@@ -13,8 +13,5 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindVite()],
-    ssr: {
-      noExternal: ['@keystatic/astro', '@keystatic/core']
-    }
   }
 });
