@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
 import BeforeAfterSlider from '../components/BeforeAfterSlider.astro';
+import ForceReact from '../components/ForceReact.jsx';
 
 import { getCollection, getEntry } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
@@ -32,6 +33,7 @@ const iconeSVG: Record<string, string> = {
   title="Roverati Giardini | Progettazione e Manutenzione Aree Verdi a Ferrara"
   description="Da oltre 50 anni l'architettura del verde a Ferrara. Potature in tree climbing, irrigazione e progettazione 3D."
 >
+  <ForceReact />
   <section class="hero-section relative min-h-screen flex items-end overflow-hidden bg-green-950">
     <div class="absolute inset-0">
       {resolvedHeroImage ? (
