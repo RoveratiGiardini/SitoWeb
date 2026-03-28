@@ -34,6 +34,19 @@ export default config({
       },
     }),
 
+    impostazioniServizi: singleton({
+      label: 'Impostazioni Pagina Servizi',
+      path: 'src/content/impostazioni/servizi',
+      format: { data: 'json' },
+      schema: {
+        heroImage: fields.image({
+          label: 'Immagine Hero Background',
+          directory: 'src/assets/images/impostazioni',
+          publicPath: '../../assets/images/impostazioni',
+        }),
+      },
+    }),
+
     // ── Contatti ─────────────────────────────────────────
     impostazioniContatti: singleton({
       label: 'Impostazioni Pagina Contatti',

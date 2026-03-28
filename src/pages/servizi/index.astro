@@ -1,9 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { Image } from 'astro:assets';
 
-// ── Utility: estrae la stringa dal campo titolo (slug object o stringa) ──────
+// ── Utility: estrae la stringa dal campo titolo ──────────────────────────────
 function slugToString(titolo: string | { slug: string }): string {
   return typeof titolo === 'string' ? titolo : titolo.slug;
 }
@@ -14,22 +14,16 @@ const serviziOrdinati = tuttiServizi.sort(
   (a, b) => (a.data.ordine ?? 99) - (b.data.ordine ?? 99)
 );
 
-// ── Icone SVG per ogni valore del campo "icona" ───────────────────────────────
+// ── Recupero impostazioni pagina Servizi (Hero) ──────────────────────────────
+const impostazioniServizi = await getEntry('impostazioni', 'servizi');
+const serviziHero = impostazioniServizi?.data?.heroImage;
+
+// ── Icone SVG ────────────────────────────────────────────────────────────────
 const icone: Record<string, string> = {
   leaf: `<path d="M17 8C8 10 5.9 16.17 3.82 19.34L5.71 21l1-1c.28.27.49.55.83.55.35 0 .65-.3.86-.57A8.48 8.48 0 0010 14.5a11.1 11.1 0 013.47 5.85l1.88-1.88A14 14 0 0012.85 11c1.07.49 2.63 1.38 4.42 3.41l1.46-1.46C17 11.49 17 8 17 8z"/>`,
   tree: `<path d="M17 8C8 10 5.9 16.17 3.82 19.34L5.71 21l1-1c.28.27.49.55.83.55.35 0 .65-.3.86-.57A8.48 8.48 0 0010 14.5a11.1 11.1 0 013.47 5.85l1.88-1.88A14 14 0 0012.85 11c1.07.49 2.63 1.38 4.42 3.41l1.46-1.46C17 11.49 17 8 17 8z"/>`,
   '3d': `<path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18-.21 0-.41-.06-.57-.18l-7.9-4.44A1 1 0 013 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18.21 0 .41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15zM5 15.91l6 3.38v-6.71L5 9.21v6.7zm8 3.38l6-3.38V9.21l-6 3.37v6.71z"/>`,
 };
-
-// ── Risoluzione immagini hero e servizi ───────────────────────────────────────
-// Tentiamo di importare l'immagine hero; se non esiste, fallback a undefined
-let serviziHero: ImageMetadata | undefined;
-try {
-  const mod = await import('../../assets/images/servizi-hero.jpg');
-  serviziHero = mod.default;
-} catch {
-  // immagine non ancora presente nel progetto — verrà mostrato lo sfondo verde
-}
 
 const serviziConImmagini = serviziOrdinati.map((s) => ({
   ...s,
