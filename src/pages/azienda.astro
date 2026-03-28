@@ -1,0 +1,439 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+
+const azienda = await getEntry('impostazioni', 'azienda');
+const d = azienda?.data as any;
+
+// ── Fallback dati ─────────────────────────────────────────────────────────
+const storiaIntro = d?.storiaIntro?.length ? d.storiaIntro : [
+  "Roverati Giardini nasce nel 1974 dalla passione di Marco Roverati per gli alberi e il verde. Quello che era un piccolo furgone con due attrezzi è diventato, nel corso di mezzo secolo, una delle realtà di riferimento per l'architettura del verde a Ferrara e provincia.",
+  "Tre generazioni si sono avvicendate portando ciascuna il proprio contributo: la competenza tecnica sul campo del fondatore, la visione progettuale e gestionale della seconda generazione, l'attenzione alla relazione con i clienti della terza.",
+  "Ogni giardino che curiamo porta il segno di questa storia. Non siamo una multinazionale del verde: siamo artigiani che amano il proprio lavoro, e si vede.",
+];
+
+const timeline = d?.timeline?.length ? d.timeline : [
+  { anno: '1974', titolo: 'La fondazione',          testo: "Tutto inizia con un furgone, una motosega e la passione di un uomo per gli alberi. Roverati Giardini nasce a Ferrara come piccola impresa familiare di giardinaggio.", accento: true },
+  { anno: '1983', titolo: 'I primi grandi appalti',  testo: "L'azienda si aggiudica i primi contratti con enti pubblici, tra cui la gestione del verde dell'Ospedale di Cona e di alcuni parchi comunali ferraresi.", accento: false },
+  { anno: '1995', titolo: 'Nasce il tree climbing',  testo: "Investiamo nelle prime attrezzature e formazioni per le potature in arrampicata. Diventiamo uno dei primi operatori in regione a offrire interventi ad alta quota certificati.", accento: false },
+  { anno: '2004', titolo: "L'Abbazia di Pomposa",   testo: "Inizia la collaborazione pluriennale per la cura del verde storico dell'Abbazia di Pomposa, uno dei progetti più importanti e delicati della nostra storia.", accento: false },
+  { anno: '2010', titolo: 'Certificazione ISO 9001', testo: "Otteniamo la certificazione ISO 9001:2015, formalizzando i processi e il controllo qualità su ogni intervento. Un impegno verso i clienti che manteniamo ancora oggi.", accento: false },
+  { anno: '2018', titolo: 'Progettazione 3D',        testo: "Integriamo il servizio di progettazione digitale con render fotorealistici: i clienti vedono il loro giardino finito prima ancora che inizino i lavori.", accento: false },
+  { anno: 'Oggi', titolo: 'Oltre 1.200 progetti',   testo: "Tre generazioni, una squadra di professionisti, 50 anni di verde. Continuiamo a crescere rimanendo fedeli ai valori di cura, rispetto per la natura e qualità artigianale.", accento: true },
+];
+
+const valori = d?.valori?.length ? d.valori : [
+  { icona: 'nature',  titolo: 'Rispetto per la natura',   descrizione: "Ogni intervento è pensato per valorizzare e proteggere l'ecosistema. Usiamo prodotti a basso impatto e privilegiamo specie autoctone." },
+  { icona: 'quality', titolo: 'Qualità certificata',      descrizione: "ISO 9001:2015 non è solo un timbro: è il risultato di processi rigidi, formazione continua e un controllo sistematico su ogni lavoro eseguito." },
+  { icona: 'team',    titolo: 'Squadra di famiglia',      descrizione: "Tre generazioni e un team affiatato. La nostra forza è nelle persone: operatori specializzati, formati continuamente, che trattano ogni giardino come fosse il proprio." },
+  { icona: 'listen',  titolo: 'Ascolto prima di tutto',   descrizione: "Ogni progetto inizia da un sopralluogo gratuito e da una conversazione. Capiamo le tue esigenze, il tuo gusto e il tuo budget prima di proporre qualsiasi soluzione." },
+];
+
+const teamIntroTesto = d?.teamIntroTesto ?? 'Tre titolari, una famiglia, e una squadra di professionisti che condividono la stessa visione.';
+
+const teamMembers = d?.teamMembers?.length ? d.teamMembers : [
+  { nome: 'Marco Roverati', ruolo: 'Fondatore & Responsabile Tecnico', bio: "50 anni di esperienza sul campo. Ha fondato l'azienda nel 1974 con la passione per gli alberi che ancora oggi trasmette a tutta la squadra.", specialita: ['Tree Climbing', 'Abbattimenti', 'Consulenza tecnica'], foto: null },
+  { nome: 'Luca Roverati',  ruolo: 'Direttore Operativo',              bio: "Seconda generazione. Ha portato in azienda la progettazione 3D e la certificazione ISO, modernizzando i processi senza perdere l'anima artigianale.", specialita: ['Progettazione 3D', 'Gestione cantieri', 'ISO 9001'], foto: null },
+  { nome: 'Sara Roverati',  ruolo: 'Responsabile Clienti & Amministrazione', bio: "Il volto dell'azienda verso i clienti. Coordina preventivi, follow-up e la soddisfazione post-lavoro, garantendo che ogni progetto superi le aspettative.", specialita: ['Coordinamento', 'Preventivi', 'Relazioni clienti'], foto: null },
+];
+
+// — Foto storiche — risoluzione dinamica tramite import.meta.glob
+const imgFotoGrande = d?.fotoStoricaGrande;
+const imgFotoMedia1 = d?.fotoStoricaMedia1;
+const imgFotoMedia2 = d?.fotoStoricaMedia2;
+const imgFotoSquadra = d?.fotoSquadra;
+
+// — Mappa icone valori (SVG inline) —
+const iconeValori: Record<string, string> = {
+  nature:   `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1M4.22 4.22l.71.71M18.36 18.36l.71.71M1 12h1m20 0h1M4.22 19.78l.71-.71M18.36 5.64l.71-.71M12 6a6 6 0 100 12A6 6 0 0012 6z"/></svg>`,
+  quality:  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>`,
+  team:     `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`,
+  listen:   `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>`,
+  growth:   `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0C10 7 7 8 5 8m7-3c2 2 5 3 7 3M5 19h14"/></svg>`,
+  security: `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+};
+---
+
+<Layout
+  title="La Nostra Azienda | Roverati Giardini"
+  description="50 anni di storia, passione per il verde e una squadra di professionisti a Ferrara. Scopri chi siamo e cosa ci ha resi leader nel settore."
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="relative bg-green-950 pt-36 pb-0 px-6 overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-green-800/15 blur-3xl translate-x-1/3 -translate-y-1/4"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-end pb-0">
+        <div class="pb-20">
+          <div class="inline-flex items-center gap-2.5 mb-8 px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+            <span class="text-[10px] font-bold tracking-[0.28em] uppercase text-green-400">Chi Siamo</span>
+          </div>
+          <h1 class="font-display text-6xl md:text-8xl text-white leading-[0.88] mb-8">
+            Cinquant'anni<br/>
+            <em class="text-green-400 font-light">di verde</em><br/>
+            e radici.
+          </h1>
+          <p class="text-white/50 text-lg font-light leading-relaxed max-w-md">
+            Dal 1974 trasformiamo spazi verdi in storie. Un'azienda di famiglia che ha fatto del rispetto per la natura la propria ragione d'essere.
+          </p>
+        </div>
+        <div class="hidden lg:flex items-end justify-end pb-12">
+          <div class="text-right select-none" aria-hidden="true">
+            <div class="font-display text-[160px] text-white/[0.06] leading-none tracking-tighter">50</div>
+            <div class="text-white/20 text-sm tracking-[0.3em] uppercase -mt-6">anni di esperienza</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="grid grid-cols-2 md:grid-cols-4 border-t border-white/8">
+        {[
+          { v: '1974',     l: 'Anno di fondazione' },
+          { v: '1.200+',   l: 'Progetti completati' },
+          { v: '98%',      l: 'Clienti soddisfatti' },
+          { v: 'ISO 9001', l: 'Qualità certificata' },
+        ].map((s, i) => (
+          <div class={`py-8 text-center ${i < 3 ? 'border-r border-white/8' : ''}`}>
+            <div class="font-display text-3xl text-white font-light">{s.v}</div>
+            <div class="text-[10px] text-white/30 mt-1 tracking-widest uppercase">{s.l}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════ STORIA INTRO ═══════════════════ -->
+  <section class="py-24 px-6 bg-cloud">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+
+        <!-- Testo (dinamico da Keystatic) -->
+        <div class="lg:col-span-5 reveal">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-px bg-green-500"></span>
+            <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-green-500">La Nostra Storia</span>
+          </div>
+          <h2 class="font-display text-4xl md:text-5xl text-green-900 leading-tight mb-7">
+            Una famiglia,<br/>
+            <em class="font-light text-green-500">una vocazione.</em>
+          </h2>
+          <div class="space-y-5 text-green-800/65 text-sm leading-relaxed font-light">
+            {storiaIntro.map((par: string) => <p>{par}</p>)}
+          </div>
+        </div>
+
+        <!-- Collage foto storiche -->
+        <div class="lg:col-span-7 reveal" style="transition-delay: 100ms">
+          <div class="grid grid-cols-12 gap-4 items-end">
+
+            <!-- Foto grande sinistra -->
+            <div class="col-span-7">
+              <div class="aspect-[3/4] rounded-3xl overflow-hidden relative group bg-green-900/20 border border-green-100">
+                {imgFotoGrande ? (
+                  <Image
+                    src={imgFotoGrande}
+                    alt={d?.fotoStoricaGrandeCaption ?? 'Foto storica Roverati Giardini'}
+                    class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                ) : (
+                  <div class="absolute inset-0 bg-gradient-to-br from-green-800/40 to-green-600/20"></div>
+                )}
+                <div class="absolute inset-0 bg-gradient-to-t from-green-950/70 via-transparent to-transparent"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-6">
+                  <div class="text-[10px] font-bold tracking-[0.2em] uppercase text-green-300 mb-1">Archivio storico</div>
+                  <div class="text-white/70 text-sm font-light">
+                    {d?.fotoStoricaGrandeCaption ?? "Ferrara, anni '80"}
+                  </div>
+                </div>
+                <div class="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-full tracking-wide">
+                  1974 →
+                </div>
+              </div>
+            </div>
+
+            <!-- Colonna destra: 2 foto piccole -->
+            <div class="col-span-5 flex flex-col gap-4">
+              <div class="aspect-square rounded-2xl overflow-hidden relative bg-green-900/15 border border-green-100">
+                {imgFotoMedia1 ? (
+                  <Image
+                    src={imgFotoMedia1}
+                    alt={d?.fotoStoricaMedia1Caption ?? 'Foto storica'}
+                    class="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  />
+                ) : (
+                  <div class="absolute inset-0 bg-gradient-to-br from-green-700/30 to-green-500/15"></div>
+                )}
+                <div class="absolute inset-0 bg-gradient-to-t from-green-950/60 to-transparent"></div>
+                <div class="absolute bottom-3 left-3 right-3 text-white/70 text-xs font-light">
+                  {d?.fotoStoricaMedia1Caption ?? "Abbazia di Pomposa, 2004"}
+                </div>
+              </div>
+              <div class="aspect-square rounded-2xl overflow-hidden relative bg-green-900/15 border border-green-100">
+                {imgFotoMedia2 ? (
+                  <Image
+                    src={imgFotoMedia2}
+                    alt={d?.fotoStoricaMedia2Caption ?? 'Foto storica'}
+                    class="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  />
+                ) : (
+                  <div class="absolute inset-0 bg-gradient-to-br from-green-600/30 to-green-400/15"></div>
+                )}
+                <div class="absolute inset-0 bg-gradient-to-t from-green-950/60 to-transparent"></div>
+                <div class="absolute bottom-3 left-3 right-3 text-white/70 text-xs font-light">
+                  {d?.fotoStoricaMedia2Caption ?? "Tree climbing, anni '95"}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════ TIMELINE ═══════════════════ -->
+  <section class="py-24 px-6 bg-green-950 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-0 left-0 w-[400px] h-[400px] rounded-full bg-green-800/20 blur-3xl -translate-x-1/3"></div>
+      <div class="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-green-600/10 blur-3xl translate-x-1/4"></div>
+    </div>
+
+    <div class="max-w-5xl mx-auto relative">
+      <div class="reveal text-center mb-16">
+        <div class="flex items-center justify-center gap-3 mb-5">
+          <span class="w-8 h-px bg-green-500"></span>
+          <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-green-500">Mezzo secolo</span>
+          <span class="w-8 h-px bg-green-500"></span>
+        </div>
+        <h2 class="font-display text-4xl md:text-5xl text-white leading-tight">
+          La nostra <em class="text-green-400 font-light">linea del tempo.</em>
+        </h2>
+      </div>
+
+      <div class="relative">
+        <!-- Linea verticale -->
+        <div class="absolute left-[80px] md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-green-500/0 via-green-500/40 to-green-500/0" aria-hidden="true"></div>
+
+        <div class="flex flex-col gap-0">
+          {timeline.map((item: any, i: number) => (
+            <div
+              class={`reveal relative flex gap-8 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center py-10`}
+              style={`transition-delay: ${i * 60}ms`}
+            >
+              <!-- Anno (cerchio centrale) -->
+              <div class="absolute left-[80px] md:left-1/2 -translate-x-1/2 z-10">
+                <div class={`w-14 h-14 rounded-full flex items-center justify-center border-2 text-xs font-bold tracking-wide font-display ${item.accento ? 'bg-green-500 border-green-400 text-white shadow-lg shadow-green-500/40' : 'bg-green-950 border-green-700/60 text-green-400'}`}>
+                  {item.anno.length <= 4 ? item.anno : (
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1M4.22 4.22l.71.71M18.36 18.36l.71.71M1 12h1m20 0h1M4.22 19.78l.71-.71M18.36 5.64l.71-.71M12 6a6 6 0 100 12A6 6 0 0012 6z"/>
+                    </svg>
+                  )}
+                </div>
+              </div>
+
+              <!-- Card contenuto -->
+              <div class={`ml-28 md:ml-0 md:w-[calc(50%-3rem)] ${i % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12'}`}>
+                <div class={`inline-block px-3 py-1 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase mb-3 ${item.accento ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-white/5 text-white/40 border border-white/10'}`}>
+                  {item.anno}
+                </div>
+                <h3 class={`font-display text-2xl mb-3 leading-tight ${item.accento ? 'text-white' : 'text-white/80'}`}>
+                  {item.titolo}
+                </h3>
+                <p class="text-white/45 text-sm leading-relaxed font-light">{item.testo}</p>
+              </div>
+
+              <!-- Spacer lato opposto su desktop -->
+              <div class="hidden md:block md:w-[calc(50%-3rem)]"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════ VALORI ═══════════════════ -->
+  <section class="py-24 px-6 bg-cloud">
+    <div class="max-w-7xl mx-auto">
+      <div class="reveal text-center mb-14">
+        <div class="flex items-center justify-center gap-3 mb-5">
+          <span class="w-8 h-px bg-green-500"></span>
+          <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-green-500">I nostri valori</span>
+          <span class="w-8 h-px bg-green-500"></span>
+        </div>
+        <h2 class="font-display text-4xl md:text-5xl text-green-900 leading-tight">
+          Cosa ci guida,<br/><em class="font-light text-green-500">ogni giorno.</em>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {valori.map((v: any, i: number) => (
+          <div
+            class={`reveal group p-8 rounded-3xl border transition-all duration-500 hover:-translate-y-1 ${i === 0 ? 'bg-green-800 border-green-700 hover:border-green-500' : 'bg-white border-green-100 hover:border-green-300 hover:shadow-xl hover:shadow-green-900/8'}`}
+            style={`transition-delay: ${i * 60}ms`}
+          >
+            <!-- Icona -->
+            <div
+              class={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${i === 0 ? 'bg-green-500/20 text-green-300' : 'bg-green-50 border border-green-100 text-green-600 group-hover:bg-green-500 group-hover:text-white group-hover:border-green-500'} transition-all duration-300`}
+              set:html={iconeValori[v.icona] ?? iconeValori['nature']}
+            />
+            <h3 class={`text-xl font-semibold mb-3 ${i === 0 ? 'text-white' : 'text-green-900'}`}>{v.titolo}</h3>
+            <p class={`text-sm leading-relaxed font-light ${i === 0 ? 'text-white/55' : 'text-green-700/65'}`}>{v.descrizione}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════ TEAM ═══════════════════ -->
+  <section class="py-24 px-6 bg-green-950 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-green-800/20 blur-3xl translate-x-1/4 translate-y-1/4"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative">
+      <div class="reveal text-center mb-16">
+        <div class="flex items-center justify-center gap-3 mb-5">
+          <span class="w-8 h-px bg-green-500"></span>
+          <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-green-500">Il Team</span>
+          <span class="w-8 h-px bg-green-500"></span>
+        </div>
+        <h2 class="font-display text-4xl md:text-5xl text-white leading-tight">
+          Le persone dietro<br/><em class="text-green-400 font-light">ogni giardino.</em>
+        </h2>
+        <p class="text-white/40 text-sm mt-5 font-light max-w-md mx-auto leading-relaxed">
+          {teamIntroTesto}
+        </p>
+      </div>
+
+      <!-- Cards titolari -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        {teamMembers.map((persona: any, i: number) => {
+          const foto = persona.foto;
+          const iniziali = persona.nome.split(' ').map((n: string) => n[0]).join('');
+          return (
+            <div class="reveal group relative" style={`transition-delay: ${i * 80}ms`}>
+              <!-- Foto / placeholder -->
+              <div class="relative w-full aspect-[3/4] rounded-3xl overflow-hidden mb-6 bg-green-900/30 border border-green-800/50">
+                {foto ? (
+                  <Image
+                    src={foto}
+                    alt={`${persona.nome} — ${persona.ruolo}`}
+                    class="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                  />
+                ) : (
+                  <div class={`absolute inset-0 bg-gradient-to-br ${i === 0 ? 'from-green-800/60 to-green-600/30' : i === 1 ? 'from-green-700/60 to-green-500/30' : 'from-green-900/60 to-green-700/30'}`}>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <div class="w-24 h-24 rounded-full bg-green-500/20 border-2 border-green-400/30 flex items-center justify-center">
+                        <span class="font-display text-4xl text-white/60 font-light" aria-hidden="true">{iniziali}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <!-- Overlay hover -->
+                <div class="absolute inset-0 bg-green-500/0 group-hover:bg-green-500/10 transition-all duration-500"></div>
+                <!-- Accent top -->
+                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500/0 via-green-400 to-green-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <!-- Badge ruolo -->
+                <div class="absolute bottom-4 left-4 right-4">
+                  <div class="bg-green-950/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-green-500/20">
+                    <div class="text-[9px] font-bold tracking-[0.2em] uppercase text-green-400 mb-0.5">Ruolo</div>
+                    <div class="text-white text-xs font-medium leading-snug">{persona.ruolo}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Info -->
+              <div>
+                <h3 class="font-display text-2xl text-white mb-2">{persona.nome}</h3>
+                <p class="text-white/45 text-sm leading-relaxed font-light mb-4">{persona.bio}</p>
+                <div class="flex flex-wrap gap-2">
+                  {(persona.specialita ?? []).map((s: string) => (
+                    <span class="text-[10px] bg-green-500/10 border border-green-500/20 text-green-400 font-bold tracking-wide uppercase px-3 py-1.5 rounded-full">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Foto di squadra — full width -->
+      <div class="reveal">
+        <div class="relative w-full aspect-[21/9] rounded-3xl overflow-hidden bg-green-900/30 border border-green-800/50">
+          {imgFotoSquadra ? (
+            <Image
+              src={imgFotoSquadra}
+              alt="La squadra Roverati Giardini"
+              class="absolute inset-0 w-full h-full object-cover"
+            />
+          ) : (
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-center">
+                <div class="text-white/25 font-display text-2xl mb-2">La squadra Roverati Giardini</div>
+                <div class="text-white/15 text-xs tracking-widest uppercase">Aggiungi la foto da Keystatic → Impostazioni Azienda</div>
+              </div>
+            </div>
+          )}
+          <div class="absolute inset-0 bg-gradient-to-r from-green-950/60 via-transparent to-green-950/60 pointer-events-none"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-green-950/70 to-transparent">
+            <div class="flex items-end justify-between">
+              <div>
+                <div class="text-white font-semibold text-lg font-display">Il nostro team</div>
+                <div class="text-white/45 text-sm font-light">Professionisti del verde, Ferrara</div>
+              </div>
+              <div class="flex items-center gap-3 bg-green-500/20 border border-green-400/30 backdrop-blur-sm rounded-full px-5 py-2.5">
+                <div class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div>
+                <span class="text-green-300 text-xs font-bold tracking-wide uppercase">Squadra attiva</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════ CTA ═══════════════════ -->
+  <section class="py-28 px-6 bg-cloud relative overflow-hidden">
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+      <svg viewBox="0 0 800 800" class="absolute w-[60vw] max-w-2xl opacity-[0.04]" fill="none">
+        <path d="M400 50C400 50 60 200 60 430C60 620 215 760 400 760C585 760 740 620 740 430C740 200 400 50 400 50Z" fill="#0C8E36"/>
+      </svg>
+    </div>
+    <div class="reveal relative max-w-2xl mx-auto text-center">
+      <h2 class="font-display text-5xl md:text-6xl text-green-900 mb-6 leading-[0.92]">
+        Affidati a chi il verde<br/>
+        <em class="text-green-500 font-light">lo vive da 50 anni.</em>
+      </h2>
+      <p class="text-green-700/55 mb-10 font-light leading-relaxed">
+        Sopralluogo gratuito, preventivo in 48 ore. Vieni a trovarci o contattaci per il tuo progetto.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/contatti" class="inline-flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white px-10 py-5 rounded-full font-semibold text-sm tracking-wide uppercase transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/40 hover:-translate-y-1 group">
+          Richiedi Preventivo
+          <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 group-hover:bg-white/30 transition-colors" aria-hidden="true">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
+        </a>
+        <a href="/galleria" class="inline-flex items-center gap-3 border-2 border-green-200 hover:border-green-500 text-green-800 hover:text-green-600 px-8 py-5 rounded-full font-semibold text-sm transition-all duration-300 hover:bg-green-50">
+          Vedi i nostri lavori
+        </a>
+      </div>
+    </div>
+  </section>
+
+</Layout>

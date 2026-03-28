@@ -1,0 +1,591 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import BeforeAfterSlider from '../components/BeforeAfterSlider.astro';
+import { getCollection, getEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+// ── Dati da Keystatic ─────────────────────────────────────────────────────
+const [
+  impostazioniGalleria,
+  tutteTrasfRaw,
+  tuttiElementiRaw,
+] = await Promise.all([
+  getEntry('impostazioni', 'galleria'),
+  getCollection('trasformazioni'),
+  getCollection('elementiGalleria'),
+]);
+
+// — Categorie filtro (con "Tutti" sempre in testa) —
+const categorieCustom = impostazioniGalleria?.data?.categorie ?? [];
+const categorieDefault = ['Giardini Privati', 'Parchi & Enti', 'Tree Climbing', 'Progettazione 3D', 'Irrigazione'];
+const categorieFiltro = ['Tutti', ...(categorieCustom.length ? categorieCustom : categorieDefault)];
+
+// — Trasformazioni ordinate per slug —
+const trasformazioni = tutteTrasfRaw.sort((a, b) => a.id.localeCompare(b.id));
+
+// — Elementi galleria masonry, ordinati per campo "ordine" —
+const elementiGalleria = tuttiElementiRaw.sort(
+  (a, b) => (a.data.ordine ?? 99) - (b.data.ordine ?? 99)
+);
+
+// — Risoluzione immagini trasformazioni —
+const trasfResolved = trasformazioni.map(t => ({
+  ...t,
+  imgPrima: t.data.immaginePrima,
+  imgDopo:  t.data.immagineDopo,
+}));
+
+const elementiResolved = elementiGalleria.map((el) => ({
+  ...el,
+  img: el.data.immagine,
+}));
+
+// — Fallback: placeholder items se la collection è vuota —
+const useFallbackItems = elementiResolved.length === 0;
+const fallbackItems = [
+  { id: 1,  cat: 'Giardini Privati',  aspect: 'tall',   label: 'Villa residenziale, Ferrara' },
+  { id: 2,  cat: 'Tree Climbing',     aspect: 'wide',   label: 'Abbattimento controllato' },
+  { id: 3,  cat: 'Progettazione 3D',  aspect: 'square', label: 'Render giardino moderno' },
+  { id: 4,  cat: 'Parchi & Enti',     aspect: 'tall',   label: 'Parco Abbazia di Pomposa' },
+  { id: 5,  cat: 'Giardini Privati',  aspect: 'wide',   label: 'Giardino con piscina' },
+  { id: 6,  cat: 'Irrigazione',       aspect: 'square', label: 'Impianto automatico' },
+  { id: 7,  cat: 'Giardini Privati',  aspect: 'square', label: 'Siepi formali, Copparo' },
+  { id: 8,  cat: 'Parchi & Enti',     aspect: 'wide',   label: 'Ospedale di Cona' },
+  { id: 9,  cat: 'Tree Climbing',     aspect: 'tall',   label: 'Potatura pioppo ad alto fusto' },
+  { id: 10, cat: 'Progettazione 3D',  aspect: 'wide',   label: 'Progetto con laghetto' },
+  { id: 11, cat: 'Giardini Privati',  aspect: 'square', label: 'Terrazza verde, Ferrara' },
+  { id: 12, cat: 'Parchi & Enti',     aspect: 'square', label: 'Area verde condominiale' },
+];
+
+// Aspect ratio → classi CSS
+const aspectClass: Record<string, string> = {
+  tall:   'row-span-2',
+  wide:   'col-span-2',
+  square: '',
+};
+---
+
+<Layout
+  title="Galleria Lavori | Roverati Giardini"
+  description="Sfoglia i nostri lavori: giardini privati, parchi pubblici, tree climbing e progettazioni 3D. Prima e dopo le trasformazioni."
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="relative bg-green-950 pt-36 pb-24 px-6 overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-green-800/20 blur-3xl translate-x-1/3 -translate-y-1/3"></div>
+      <div class="absolute bottom-0 left-1/4 w-[300px] h-[300px] rounded-full bg-green-600/10 blur-3xl"></div>
+    </div>
+    <!-- Linee decorative -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.04]" aria-hidden="true">
+      {Array(12).fill(null).map((_, i) => (
+        <div class="absolute left-0 right-0 h-px bg-white" style={`top: ${8 + i * 8}%`}></div>
+      ))}
+    </div>
+
+    <div class="relative max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-10">
+      <div>
+        <div class="inline-flex items-center gap-2.5 mb-7 px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10">
+          <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+          <span class="text-[10px] font-bold tracking-[0.28em] uppercase text-green-400">Portfolio Lavori</span>
+        </div>
+        <h1 class="font-display text-6xl md:text-8xl text-white leading-[0.88]">
+          Ogni lavoro<br/>
+          <em class="text-green-400 font-light">racconta</em><br/>
+          una storia.
+        </h1>
+      </div>
+      <div class="md:text-right max-w-xs">
+        <p class="text-white/45 text-sm leading-relaxed font-light mb-6">
+          1.200+ progetti realizzati in 50 anni. Sfoglia le trasformazioni e lasciati ispirare.
+        </p>
+        <div class="flex gap-8 md:justify-end">
+          {[{ v: '1.200+', l: 'Progetti' }, { v: '50+', l: 'Anni' }, { v: '98%', l: 'Soddisfatti' }].map(s => (
+            <div class="text-center md:text-right">
+              <div class="font-display text-2xl text-white font-light">{s.v}</div>
+              <div class="text-[10px] text-white/35 tracking-widest uppercase">{s.l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════ PRIMA / DOPO ═══════════════════ -->
+  {trasfResolved.length > 0 && (
+    <section class="py-24 px-6 bg-cloud">
+      <div class="max-w-7xl mx-auto">
+
+        <div class="reveal mb-14">
+          <div class="flex items-center gap-3 mb-5">
+            <span class="w-8 h-px bg-green-500"></span>
+            <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-green-500">Trasformazioni</span>
+          </div>
+          <h2 class="font-display text-4xl md:text-5xl text-green-900 leading-tight">
+            Prima e dopo:<br/><em class="font-light text-green-500">il verde che cambia.</em>
+          </h2>
+        </div>
+
+        <div class="reveal" id="trasf-section">
+
+          <!-- Tab nav -->
+          <div class="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-none" id="trasf-tabs" role="tablist" aria-label="Trasformazioni">
+            {trasfResolved.map((t, i) => (
+              <button
+                class={`trasf-tab flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-bold tracking-wide uppercase transition-all duration-200 border ${i === 0 ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-700 border-green-100 hover:border-green-300'}`}
+                data-tab={i}
+                role="tab"
+                aria-selected={i === 0 ? 'true' : 'false'}
+                aria-controls={`trasf-panel-${i}`}
+                id={`trasf-tab-${i}`}
+              >
+                {t.data.titolo ?? `Progetto ${i + 1}`}
+              </button>
+            ))}
+          </div>
+
+          <!-- Pannelli -->
+          {trasfResolved.map((t, i) => (
+            <div
+              class={`trasf-panel ${i !== 0 ? 'hidden' : ''}`}
+              data-panel={i}
+              id={`trasf-panel-${i}`}
+              role="tabpanel"
+              aria-labelledby={`trasf-tab-${i}`}
+            >
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+
+                <!-- Slider o placeholder -->
+                <div class="lg:col-span-7">
+                  {t.imgPrima && t.imgDopo ? (
+                    <BeforeAfterSlider
+                      beforeImg={t.data.immaginePrima}
+                      afterImg={t.data.immagineDopo}   
+                      altText={typeof t.data.titolo === 'string' ? t.data.titolo : t.data.titolo.slug}
+                    />
+                  ) : (
+                    <!-- Placeholder visuale se le immagini non sono ancora caricate -->
+                    <div class="relative w-full aspect-[16/10] bg-green-900/30 rounded-3xl overflow-hidden border border-green-200/20 flex items-center justify-center">
+                      <div class="text-center">
+                        <p class="text-green-600/50 text-sm font-light mb-2">Slider Prima/Dopo</p>
+                        <p class="text-green-600/35 text-xs">Carica le immagini da Keystatic → Trasformazioni</p>
+                      </div>
+                      <div class="absolute inset-y-0 left-1/2 w-px bg-white/40"></div>
+                      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 shadow-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l-6-6 6-6M15 6l6 6-6 6"/>
+                        </svg>
+                      </div>
+                      <span class="absolute bottom-4 left-4 text-[10px] font-bold tracking-widest uppercase bg-black/50 text-white px-3 py-1.5 rounded-full">Prima</span>
+                      <span class="absolute bottom-4 right-4 text-[10px] font-bold tracking-widest uppercase bg-green-600/90 text-white px-3 py-1.5 rounded-full">Dopo</span>
+                    </div>
+                  )}
+                </div>
+
+                <!-- Info progetto -->
+                <div class="lg:col-span-5">
+                  {t.data.categoria && (
+                    <div class="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-green-50 border border-green-100 rounded-full">
+                      <span class="w-1 h-1 rounded-full bg-green-500"></span>
+                      <span class="text-[10px] font-bold tracking-[0.2em] uppercase text-green-600">{t.data.categoria}</span>
+                    </div>
+                  )}
+                  <h3 class="font-display text-3xl text-green-900 mb-4 leading-tight">
+                    {String(t.data.titolo ?? t.data.titolo).replace(/-/g, ' ')}
+                  </h3>
+                  {t.data.descrizione && (
+                    <p class="text-green-700/65 text-sm leading-relaxed mb-8 font-light">{t.data.descrizione}</p>
+                  )}
+
+                  {(t.data.location || t.data.durata) && (
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                      {t.data.location && (
+                        <div class="bg-green-50 border border-green-100 rounded-2xl px-4 py-4">
+                          <div class="text-[9px] font-bold tracking-[0.2em] uppercase text-green-400 mb-1">Località</div>
+                          <div class="text-sm font-semibold text-green-900">{t.data.location}</div>
+                        </div>
+                      )}
+                      {t.data.durata && (
+                        <div class="bg-green-50 border border-green-100 rounded-2xl px-4 py-4">
+                          <div class="text-[9px] font-bold tracking-[0.2em] uppercase text-green-400 mb-1">Durata</div>
+                          <div class="text-sm font-semibold text-green-900">{t.data.durata}</div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <a href="/contatti" class="inline-flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white px-7 py-3.5 rounded-full font-semibold text-sm tracking-wide uppercase transition-all duration-300 hover:shadow-xl hover:shadow-green-500/30 hover:-translate-y-0.5 group">
+                    Progetto simile?
+                    <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 group-hover:bg-white/30 transition-colors" aria-hidden="true">
+                      <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                      </svg>
+                    </span>
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Messaggio se nessuna trasformazione è ancora stata aggiunta -->
+  {trasfResolved.length === 0 && (
+    <section class="py-16 px-6 bg-cloud">
+      <div class="max-w-2xl mx-auto text-center border border-green-100 rounded-3xl p-12 bg-white">
+        <p class="text-green-700/60 text-sm font-light mb-2">Nessuna trasformazione disponibile.</p>
+        <p class="text-green-500 text-xs">Aggiungile da <strong>Keystatic → Trasformazioni Prima/Dopo</strong></p>
+      </div>
+    </section>
+  )}
+
+
+  <!-- ═══════════════════ GALLERIA MASONRY ═══════════════════ -->
+  <section class="py-24 px-6 bg-green-950 relative overflow-hidden">
+    <div
+      class="absolute inset-0 opacity-[0.03] pointer-events-none"
+      style="background-image: repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%); background-size: 24px 24px;"
+      aria-hidden="true"
+    ></div>
+
+    <div class="max-w-7xl mx-auto relative">
+
+      <!-- Header + filtri -->
+      <div class="reveal flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+        <div>
+          <div class="flex items-center gap-3 mb-5">
+            <span class="w-8 h-px bg-green-500"></span>
+            <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-green-500">Tutti i lavori</span>
+          </div>
+          <h2 class="font-display text-4xl md:text-5xl text-white leading-tight">
+            Il nostro<br/><em class="text-green-400 font-light">portfolio verde.</em>
+          </h2>
+        </div>
+
+        <!-- Filter pills -->
+        <div class="flex flex-wrap gap-2" id="filter-btns" role="group" aria-label="Filtra per categoria">
+          {categorieFiltro.map((cat, i) => (
+            <button
+              class={`filter-btn flex-shrink-0 px-4 py-2 rounded-full text-[11px] font-bold tracking-wide uppercase transition-all duration-200 border ${i === 0 ? 'bg-green-500 text-white border-green-500' : 'bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white'}`}
+              data-filter={cat}
+              aria-pressed={i === 0 ? 'true' : 'false'}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Griglia masonry -->
+      <div
+        class="reveal masonry-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[180px]"
+        id="masonry-grid"
+      >
+        {useFallbackItems ? (
+          /* Placeholder items finché la collection non è popolata */
+          fallbackItems.map((item, idx) => (
+            <div
+              class={`gallery-item group relative overflow-hidden rounded-2xl cursor-pointer bg-green-900/40 border border-green-800/50 ${aspectClass[item.aspect] ?? ''}`}
+              data-cat={item.cat}
+              data-idx={idx}
+              style={`animation-delay: ${idx * 40}ms`}
+            >
+              <div class={`absolute inset-0 gallery-placeholder-${(idx % 6) + 1}`}></div>
+              <div class="absolute inset-0 bg-green-950/0 group-hover:bg-green-950/60 transition-all duration-400"></div>
+              <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
+                <span class="text-[9px] font-bold tracking-wide uppercase bg-green-500 text-white px-2.5 py-1 rounded-full">{item.cat}</span>
+              </div>
+              <div class="absolute bottom-0 left-0 right-0 p-4 translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                <p class="text-white text-sm font-semibold leading-snug">{item.label}</p>
+              </div>
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300">
+                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                </svg>
+              </div>
+            </div>
+          ))
+        ) : (
+          /* Items reali da Keystatic */
+          elementiResolved.map((item, idx) => (
+            <div
+              class={`gallery-item group relative overflow-hidden rounded-2xl cursor-pointer bg-green-900/40 border border-green-800/50 ${aspectClass[item.data.aspetto] ?? ''}`}
+              data-cat={item.data.categoria}
+              data-idx={idx}
+              data-label={item.data.label ?? item.data.label}
+              style={`animation-delay: ${idx * 40}ms`}
+            >
+              {item.img ? (
+                <Image
+                  src={item.img}
+                  alt={String(item.data.label ?? item.data.label)}
+                  class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  loading="lazy"
+                />
+              ) : (
+                <div class={`absolute inset-0 gallery-placeholder-${(idx % 6) + 1}`}></div>
+              )}
+              <div class="absolute inset-0 bg-green-950/0 group-hover:bg-green-950/60 transition-all duration-400"></div>
+              <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
+                <span class="text-[9px] font-bold tracking-wide uppercase bg-green-500 text-white px-2.5 py-1 rounded-full">{item.data.categoria}</span>
+              </div>
+              <div class="absolute bottom-0 left-0 right-0 p-4 translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                <p class="text-white text-sm font-semibold leading-snug">
+                  {String(item.data.label ?? item.data.label).replace(/-/g, ' ')}
+                </p>
+              </div>
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300">
+                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                </svg>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Nota se si usano i placeholder */}
+      {useFallbackItems && (
+        <p class="text-center text-green-600/40 text-xs mt-6 font-light">
+          Stai vedendo i dati demo. Popola la galleria da <strong class="text-green-500/60">Keystatic → Galleria — Foto</strong>
+        </p>
+      )}
+
+      <!-- Pulsante carica altri (funzionale solo con implementazione paginazione) -->
+      {!useFallbackItems && elementiResolved.length >= 12 && (
+        <div class="reveal text-center mt-12">
+          <button
+            id="load-more-btn"
+            class="inline-flex items-center gap-3 border border-white/20 text-white/70 hover:text-white hover:border-green-500 hover:bg-green-500/10 px-8 py-4 rounded-full text-sm font-semibold tracking-wide uppercase transition-all duration-300"
+          >
+            Carica altri lavori
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+        </div>
+      )}
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════ LIGHTBOX ═══════════════════ -->
+  <div
+    id="lightbox"
+    class="fixed inset-0 z-[999] bg-green-950/95 backdrop-blur-xl hidden items-center justify-center p-6"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Visualizzatore immagini"
+  >
+    <button id="lb-close" aria-label="Chiudi" class="absolute top-6 right-6 w-11 h-11 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white flex items-center justify-center transition-all duration-200">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    <button id="lb-prev" aria-label="Immagine precedente" class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white flex items-center justify-center transition-all duration-200">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <button id="lb-next" aria-label="Immagine successiva" class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white flex items-center justify-center transition-all duration-200">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
+    <div class="max-w-4xl w-full">
+      <div id="lb-img-wrap" class="w-full aspect-[4/3] rounded-2xl bg-green-900/50 overflow-hidden flex items-center justify-center">
+        <!-- L'immagine viene inserita via JS -->
+        <span id="lb-placeholder" class="text-white/30 text-sm">Immagine</span>
+      </div>
+      <p id="lb-label" class="text-center text-white/60 text-sm mt-4 font-light"></p>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════ CTA ═══════════════════ -->
+  <section class="py-28 px-6 bg-cloud relative overflow-hidden">
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+      <svg viewBox="0 0 800 800" class="absolute w-[60vw] max-w-2xl opacity-[0.035]" fill="none">
+        <path d="M400 50C400 50 60 200 60 430C60 620 215 760 400 760C585 760 740 620 740 430C740 200 400 50 400 50Z" fill="#0C8E36"/>
+      </svg>
+    </div>
+    <div class="reveal relative max-w-2xl mx-auto text-center">
+      <h2 class="font-display text-5xl md:text-6xl text-green-900 mb-6 leading-[0.92]">
+        Il prossimo progetto<br/><em class="text-green-500 font-light">è il tuo.</em>
+      </h2>
+      <p class="text-green-700/55 mb-10 font-light leading-relaxed">Raccontaci la tua idea. Sopralluogo gratuito, preventivo entro 48 ore.</p>
+      <a href="/contatti" class="inline-flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white px-10 py-5 rounded-full font-semibold text-sm tracking-wide uppercase transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/40 hover:-translate-y-1 group">
+        Richiedi Preventivo Gratuito
+        <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 group-hover:bg-white/30 transition-colors" aria-hidden="true">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </section>
+
+</Layout>
+
+<style>
+  /* Placeholder gradients (finché la galleria non ha foto reali) */
+  .gallery-placeholder-1 { background: linear-gradient(135deg, #0f4d1a 0%, #1a7a2e 50%, #0d5e1e 100%); }
+  .gallery-placeholder-2 { background: linear-gradient(135deg, #1a3f20 0%, #2d6b35 50%, #1a4a25 100%); }
+  .gallery-placeholder-3 { background: linear-gradient(135deg, #0a3a15 0%, #155c22 50%, #0a4a1a 100%); }
+  .gallery-placeholder-4 { background: linear-gradient(135deg, #1f5c28 0%, #2e8038 50%, #1a5520 100%); }
+  .gallery-placeholder-5 { background: linear-gradient(135deg, #0d4a1a 0%, #1a6b2a 50%, #0a5020 100%); }
+  .gallery-placeholder-6 { background: linear-gradient(135deg, #153d1e 0%, #267030 50%, #153d1e 100%); }
+
+  /* Animazione items griglia */
+  .gallery-item { animation: gridFadeIn 0.6s cubic-bezier(0.22,1,0.36,1) both; }
+  @keyframes gridFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .gallery-item.filtered-out { display: none; }
+
+  /* Lightbox */
+  #lightbox.open {
+    display: flex;
+    animation: lbFadeIn 0.25s ease both;
+  }
+  @keyframes lbFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* Nascondi scrollbar tabs */
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<script>
+  // ── Filter ────────────────────────────────────────────────────────────────
+  const filterBtns    = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const galleryItems  = document.querySelectorAll<HTMLElement>('.gallery-item');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter!;
+
+      filterBtns.forEach(b => {
+        b.classList.remove('bg-green-500', 'text-white', 'border-green-500');
+        b.classList.add('bg-white/5', 'text-white/60', 'border-white/10');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('bg-green-500', 'text-white', 'border-green-500');
+      btn.classList.remove('bg-white/5', 'text-white/60', 'border-white/10');
+      btn.setAttribute('aria-pressed', 'true');
+
+      galleryItems.forEach(item => {
+        const match = filter === 'Tutti' || item.dataset.cat === filter;
+        item.classList.toggle('filtered-out', !match);
+      });
+    });
+  });
+
+  // ── Lightbox ─────────────────────────────────────────────────────────────
+  const lightbox  = document.getElementById('lightbox')!;
+  const lbImgWrap = document.getElementById('lb-img-wrap')!;
+  const lbPlaceholder = document.getElementById('lb-placeholder')!;
+  const lbLabel   = document.getElementById('lb-label')!;
+  const lbClose   = document.getElementById('lb-close')!;
+  const lbPrev    = document.getElementById('lb-prev')!;
+  const lbNext    = document.getElementById('lb-next')!;
+
+  let visibleItems: HTMLElement[] = [];
+  let currentIdx = 0;
+
+  const openLightbox = (idx: number) => {
+    visibleItems = Array.from(galleryItems).filter(i => !i.classList.contains('filtered-out'));
+    currentIdx = visibleItems.indexOf(galleryItems[idx] as HTMLElement);
+    if (currentIdx === -1) currentIdx = 0;
+    updateLightbox();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    lightbox.classList.remove('open');
+    lightbox.classList.add('hidden');
+    document.body.style.overflow = '';
+    setTimeout(() => lightbox.classList.remove('hidden'), 10);
+  };
+
+  const updateLightbox = () => {
+    const item = visibleItems[currentIdx];
+    if (!item) return;
+
+    // Leggo l'immagine reale dall'<img> inside item, se esiste
+    const imgEl = item.querySelector<HTMLImageElement>('img');
+    const label = item.dataset.label ?? item.querySelector('p')?.textContent ?? '';
+
+    // Rimuovo eventuali immagini precedenti nel lightbox
+    lbImgWrap.querySelectorAll('img').forEach(img => img.remove());
+
+    if (imgEl?.src) {
+      lbPlaceholder.classList.add('hidden');
+      const lb = document.createElement('img');
+      lb.src = imgEl.src;
+      lb.alt = label;
+      lb.className = 'w-full h-full object-contain';
+      lbImgWrap.appendChild(lb);
+    } else {
+      lbPlaceholder.classList.remove('hidden');
+    }
+
+    lbLabel.textContent = label;
+    lbPrev.style.display = visibleItems.length <= 1 ? 'none' : '';
+    lbNext.style.display = visibleItems.length <= 1 ? 'none' : '';
+  };
+
+  galleryItems.forEach((item, idx) => {
+    item.addEventListener('click', () => openLightbox(idx));
+  });
+
+  lbClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+
+  lbPrev.addEventListener('click', () => {
+    currentIdx = (currentIdx - 1 + visibleItems.length) % visibleItems.length;
+    updateLightbox();
+  });
+  lbNext.addEventListener('click', () => {
+    currentIdx = (currentIdx + 1) % visibleItems.length;
+    updateLightbox();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowLeft')   lbPrev.click();
+    if (e.key === 'ArrowRight')  lbNext.click();
+  });
+
+  // ── Transformation tabs ───────────────────────────────────────────────────
+  const tabs   = document.querySelectorAll<HTMLButtonElement>('.trasf-tab');
+  const panels = document.querySelectorAll<HTMLElement>('.trasf-panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const idx = parseInt(tab.dataset.tab!);
+
+      tabs.forEach(t => {
+        t.classList.remove('bg-green-500', 'text-white', 'border-green-500');
+        t.classList.add('bg-white', 'text-green-700', 'border-green-100');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('bg-green-500', 'text-white', 'border-green-500');
+      tab.classList.remove('bg-white', 'text-green-700', 'border-green-100');
+      tab.setAttribute('aria-selected', 'true');
+
+      panels.forEach(p => p.classList.add('hidden'));
+      panels[idx]?.classList.remove('hidden');
+    });
+  });
+</script>

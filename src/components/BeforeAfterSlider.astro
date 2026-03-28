@@ -1,0 +1,180 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  beforeImg: ImageMetadata | null | undefined;
+  afterImg: ImageMetadata | null | undefined;
+  altText: string;
+  initialPosition?: number;
+}
+
+const { beforeImg, afterImg, altText, initialPosition = 45 } = Astro.props;
+
+if (!beforeImg || !afterImg) {
+  return;
+}
+---
+
+<div 
+  class="before-after-container relative w-full aspect-[4/3] md:aspect-[16/9] overflow-hidden rounded-3xl shadow-2xl cursor-col-resize select-none group/slider"
+  data-initial={initialPosition}
+  role="slider"
+  aria-label={`Comparazione prima/dopo: ${altText}`}
+  aria-valuemin="0"
+  aria-valuemax="100"
+  aria-valuenow={initialPosition}
+  tabindex="0"
+>
+  <Image 
+    src={afterImg} 
+    alt={`Dopo l'intervento: ${altText}`}
+    class="absolute inset-0 w-full h-full object-cover"
+    widths={[400, 800, 1200]}
+    sizes="(max-width: 768px) 100vw, 50vw"
+  />
+  
+  <div class="before-layer absolute inset-0 overflow-hidden" style={`clip-path: inset(0 ${100 - initialPosition}% 0 0)`}>
+    <Image 
+      src={beforeImg} 
+      alt={`Prima dell'intervento: ${altText}`}
+      class="absolute inset-0 w-full h-full object-cover"
+      widths={[400, 800, 1200]}
+      sizes="(max-width: 768px) 100vw, 50vw"
+    />
+  </div>
+
+  <div class="divider-line absolute top-0 bottom-0 w-[2px] bg-white shadow-[0_0_16px_rgba(12,142,54,0.6),0_0_4px_rgba(255,255,255,0.9)] pointer-events-none" style={`left: ${initialPosition}%`}></div>
+
+  <div class="handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none z-10" style={`left: ${initialPosition}%`}>
+    <div class="handle-circle w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center border-2 border-green-500/30 backdrop-blur-sm transition-transform duration-150 group-hover/slider:scale-110 group-hover/slider:shadow-green-500/30 group-hover/slider:shadow-2xl">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-green-700">
+        <path d="M9 18l-6-6 6-6"/>
+        <path d="M15 6l6 6-6 6"/>
+      </svg>
+    </div>
+    <div class="absolute inset-0 rounded-full border-2 border-green-400/40 scale-110 opacity-0 group-hover/slider:opacity-100 transition-opacity duration-300"></div>
+  </div>
+
+  <div class="absolute bottom-5 left-5 z-10 pointer-events-none">
+    <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase bg-black/50 text-white backdrop-blur-md border border-white/20 shadow-lg">
+      Prima
+    </span>
+  </div>
+  <div class="absolute bottom-5 right-5 z-10 pointer-events-none">
+    <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase bg-green-600/90 text-white backdrop-blur-md border border-green-400/30 shadow-lg">
+      Dopo
+    </span>
+  </div>
+
+  <div class="hint-overlay absolute inset-0 z-20 flex items-center justify-center pointer-events-none transition-opacity duration-500">
+    <div class="flex items-center gap-3 bg-green-950/70 backdrop-blur-sm rounded-full px-5 py-2.5 text-white text-xs font-medium border border-green-500/30">
+      <svg class="w-4 h-4 text-green-400 animate-[swipe_1.5s_ease-in-out_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path d="M9 18l-6-6 6-6M15 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Trascina per confrontare
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes swipe {
+    0%, 100% { transform: translateX(0); opacity: 0.7; }
+    50% { transform: translateX(4px); opacity: 1; }
+  }
+</style>
+
+<script>
+  let activeHandlers: { remove: () => void }[] = [];
+
+  function initSliders() {
+    // Pulisce i vecchi listener globali ad ogni inizializzazione per evitare memory leak
+    activeHandlers.forEach(handler => handler.remove());
+    activeHandlers = [];
+
+    const containers = document.querySelectorAll<HTMLElement>('.before-after-container');
+
+    containers.forEach(container => {
+      const beforeLayer = container.querySelector<HTMLElement>('.before-layer');
+      const handle = container.querySelector<HTMLElement>('.handle');
+      const dividerLine = container.querySelector<HTMLElement>('.divider-line');
+      const hintOverlay = container.querySelector<HTMLElement>('.hint-overlay');
+
+      if (!beforeLayer || !handle || !dividerLine || !hintOverlay) return;
+
+      let isDragging = false;
+      let hasInteracted = false;
+
+      const initial = parseFloat(container.dataset.initial || '45');
+      let currentPct = initial;
+
+      const setPosition = (pct: number) => {
+        currentPct = Math.max(2, Math.min(98, pct));
+        const p = `${currentPct}%`;
+        handle.style.left = p;
+        dividerLine.style.left = p;
+        beforeLayer.style.clipPath = `inset(0 ${100 - currentPct}% 0 0)`;
+        container.setAttribute('aria-valuenow', String(Math.round(currentPct)));
+      };
+
+      const pctFromX = (x: number) => {
+        const rect = container.getBoundingClientRect();
+        return ((x - rect.left) / rect.width) * 100;
+      };
+
+      const onInteract = () => {
+        if (!hasInteracted) {
+          hasInteracted = true;
+          hintOverlay.style.opacity = '0';
+          setTimeout(() => hintOverlay.style.display = 'none', 500);
+        }
+      };
+
+      // Gestione del Drag Container
+      const startDrag = (e: MouseEvent | TouchEvent) => {
+        isDragging = true;
+        onInteract();
+        const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+        setPosition(pctFromX(clientX));
+      };
+
+      const stopDrag = () => { isDragging = false; };
+      
+      const moveDrag = (e: MouseEvent | TouchEvent) => {
+        if (!isDragging) return;
+        const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+        setPosition(pctFromX(clientX));
+      };
+
+      // Container Listeners
+      container.addEventListener('mousedown', startDrag);
+      container.addEventListener('touchstart', startDrag, { passive: true });
+
+      container.addEventListener('keydown', (e) => {
+        const step = e.shiftKey ? 10 : 2;
+        if (e.key === 'ArrowLeft') { onInteract(); setPosition(currentPct - step); e.preventDefault(); }
+        if (e.key === 'ArrowRight') { onInteract(); setPosition(currentPct + step); e.preventDefault(); }
+      });
+
+      // Window Listeners gestiti per il cleanup
+      window.addEventListener('mouseup', stopDrag);
+      window.addEventListener('mousemove', moveDrag as any);
+      window.addEventListener('touchend', stopDrag);
+      window.addEventListener('touchmove', moveDrag as any, { passive: false });
+
+      // Salviamo i riferimenti per poterli distruggere
+      activeHandlers.push({
+        remove: () => {
+          window.removeEventListener('mouseup', stopDrag);
+          window.removeEventListener('mousemove', moveDrag as any);
+          window.removeEventListener('touchend', stopDrag);
+          window.removeEventListener('touchmove', moveDrag as any);
+        }
+      });
+    });
+  }
+
+  // Inizializza subito e poi ri-lega agli eventi di pagina di Astro
+  initSliders();
+  document.addEventListener('astro:page-load', initSliders);
+</script>

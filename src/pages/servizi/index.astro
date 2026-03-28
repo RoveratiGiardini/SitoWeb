@@ -1,0 +1,290 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+
+// ── Utility: estrae la stringa dal campo titolo (slug object o stringa) ──────
+function slugToString(titolo: string | { slug: string }): string {
+  return typeof titolo === 'string' ? titolo : titolo.slug;
+}
+
+// ── Recupero e ordinamento servizi ───────────────────────────────────────────
+const tuttiServizi = await getCollection('servizi');
+const serviziOrdinati = tuttiServizi.sort(
+  (a, b) => (a.data.ordine ?? 99) - (b.data.ordine ?? 99)
+);
+
+// ── Icone SVG per ogni valore del campo "icona" ───────────────────────────────
+const icone: Record<string, string> = {
+  leaf: `<path d="M17 8C8 10 5.9 16.17 3.82 19.34L5.71 21l1-1c.28.27.49.55.83.55.35 0 .65-.3.86-.57A8.48 8.48 0 0010 14.5a11.1 11.1 0 013.47 5.85l1.88-1.88A14 14 0 0012.85 11c1.07.49 2.63 1.38 4.42 3.41l1.46-1.46C17 11.49 17 8 17 8z"/>`,
+  tree: `<path d="M17 8C8 10 5.9 16.17 3.82 19.34L5.71 21l1-1c.28.27.49.55.83.55.35 0 .65-.3.86-.57A8.48 8.48 0 0010 14.5a11.1 11.1 0 013.47 5.85l1.88-1.88A14 14 0 0012.85 11c1.07.49 2.63 1.38 4.42 3.41l1.46-1.46C17 11.49 17 8 17 8z"/>`,
+  '3d': `<path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18-.21 0-.41-.06-.57-.18l-7.9-4.44A1 1 0 013 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18.21 0 .41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15zM5 15.91l6 3.38v-6.71L5 9.21v6.7zm8 3.38l6-3.38V9.21l-6 3.37v6.71z"/>`,
+};
+
+// ── Risoluzione immagini hero e servizi ───────────────────────────────────────
+// Tentiamo di importare l'immagine hero; se non esiste, fallback a undefined
+let serviziHero: ImageMetadata | undefined;
+try {
+  const mod = await import('../../assets/images/servizi-hero.jpg');
+  serviziHero = mod.default;
+} catch {
+  // immagine non ancora presente nel progetto — verrà mostrato lo sfondo verde
+}
+
+const serviziConImmagini = serviziOrdinati.map((s) => ({
+  ...s,
+  img: s.data.immagine,
+  titoloStr: slugToString(s.data.titolo),
+}));
+---
+
+<Layout
+  title="I Nostri Servizi | Roverati Giardini"
+  description="Scopri tutti i servizi di architettura del verde, potatura in tree climbing e manutenzione offerti da Roverati Giardini a Ferrara e provincia."
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="relative min-h-[90vh] flex items-center overflow-hidden bg-green-950">
+
+    <!-- Background image -->
+    <div class="absolute inset-0">
+      {serviziHero ? (
+        <Image
+          src={serviziHero}
+          alt="Lavori di giardinaggio professionale Roverati Giardini"
+          class="w-full h-full object-cover opacity-30"
+          widths={[800, 1400, 2000]}
+          sizes="100vw"
+          loading="eager"
+        />
+      ) : (
+        <div class="absolute inset-0 bg-gradient-to-br from-green-950 to-green-800"></div>
+      )}
+      <div class="absolute inset-0 bg-gradient-to-r from-green-950 via-green-950/90 to-green-900/60"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-green-950/80 via-transparent to-transparent"></div>
+    </div>
+
+    <!-- Shape decorativa -->
+    <div class="absolute top-0 right-0 w-[50vw] h-full pointer-events-none" aria-hidden="true">
+      <svg viewBox="0 0 600 800" fill="none" class="w-full h-full opacity-10">
+        <path d="M600 0 C400 100 500 300 350 400 C200 500 300 700 600 800 Z" fill="#0C8E36"/>
+      </svg>
+    </div>
+    <div class="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-green-500/10 blur-3xl pointer-events-none"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 pt-32 pb-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+      <!-- Testo -->
+      <div>
+        <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10">
+          <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+          <span class="text-[10px] font-bold tracking-[0.25em] uppercase text-green-400">Cosa Facciamo</span>
+        </div>
+        <h1 class="font-display text-6xl md:text-8xl text-white mb-6 leading-[0.9]">
+          Il Verde<br/>
+          <em class="text-green-400 not-italic">è il nostro</em><br/>
+          <span class="font-light">linguaggio.</span>
+        </h1>
+        <p class="text-lg text-white/60 leading-relaxed max-w-md mb-12 font-light">
+          Dalla progettazione 3D alla cura di alberi secolari in tree climbing: soluzioni complete per ogni esigenza del tuo spazio verde.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="/contatti" class="inline-flex items-center gap-3 bg-green-500 hover:bg-green-400 text-white px-8 py-4 rounded-full font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-xl hover:shadow-green-500/40 hover:-translate-y-0.5">
+            Preventivo Gratuito
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+          <a href="#servizi" class="inline-flex items-center gap-2 text-white/70 hover:text-white px-6 py-4 rounded-full font-medium text-sm transition-colors">
+            Scopri i servizi
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats cards (desktop) -->
+      <div class="hidden lg:flex flex-col gap-4 items-end" aria-hidden="true">
+        {[
+          { value: '50+',      label: 'Anni di Esperienza' },
+          { value: '1.200+',   label: 'Progetti Realizzati' },
+          { value: 'ISO 9001', label: 'Qualità Certificata' },
+        ].map((stat, i) => (
+          <div
+            class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl px-6 py-5 flex items-center gap-5 hover:bg-green-500/10 hover:border-green-500/30 transition-all duration-300 cursor-default"
+            style={`transform: translateX(${i * 20}px)`}
+          >
+            <div>
+              <div class="text-3xl font-bold text-white tracking-tight">{stat.value}</div>
+              <div class="text-xs text-white/50 tracking-wide mt-0.5">{stat.label}</div>
+            </div>
+          </div>
+        ))}
+        <div class="mt-4 flex items-center gap-3 text-white/40 text-xs tracking-wide" style="transform: translateX(40px)">
+          <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+          </svg>
+          Ferrara e Provincia
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30 text-xs tracking-widest uppercase" aria-hidden="true">
+      <span>Scorri</span>
+      <div class="w-px h-8 bg-gradient-to-b from-white/30 to-transparent overflow-hidden relative">
+        <div class="absolute top-0 w-full h-3 bg-green-400 animate-[scrollDot_1.5s_ease-in-out_infinite]"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════ SERVIZI GRID ═══════════════════ -->
+  <section id="servizi" class="relative px-6 py-24 bg-cloud">
+    <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-green-950/5 to-transparent pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto">
+
+      <div class="reveal mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-8 h-px bg-green-500"></span>
+            <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-green-500">I Nostri Servizi</span>
+          </div>
+          <h2 class="font-display text-5xl md:text-6xl text-green-900 leading-tight">
+            Competenza<br/><em class="font-light text-green-500">a tutto tondo</em>
+          </h2>
+        </div>
+        <p class="text-green-700/70 max-w-xs text-sm leading-relaxed md:text-right font-light">
+          Ogni servizio è progettato per rispettare la natura e valorizzare i tuoi spazi verdi al massimo.
+        </p>
+      </div>
+
+      {serviziConImmagini.length === 0 ? (
+        <!-- Stato vuoto — nessun servizio in Keystatic -->
+        <div class="text-center border border-green-100 rounded-3xl p-16 bg-white">
+          <p class="text-green-700/60 text-sm font-light mb-2">Nessun servizio pubblicato.</p>
+          <p class="text-green-500 text-xs">Aggiungili da <strong>Keystatic → Servizi di Giardinaggio</strong></p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {serviziConImmagini.map((servizio, index) => (
+            <a
+              href={`/servizi/${servizio.id}`}
+              class="reveal group relative bg-white rounded-3xl overflow-hidden border border-green-100 hover:border-green-300 hover:shadow-2xl hover:shadow-green-900/10 hover:-translate-y-2 transition-all duration-500"
+              style={`transition-delay: ${index * 60}ms`}
+            >
+              <!-- Accent bar top -->
+              <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-green-400 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+
+              {/* Immagine servizio (se presente) */}
+              {servizio.img && (
+                <div class="relative w-full aspect-[16/9] overflow-hidden">
+                  <Image
+                    src={servizio.img}
+                    alt={servizio.titoloStr}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    widths={[400, 800]}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent"></div>
+                </div>
+              )}
+
+              <div class="relative p-8 md:p-9">
+                <!-- Icona + numero -->
+                <div class="flex justify-between items-start mb-6">
+                  <div class="w-12 h-12 rounded-2xl bg-green-50 group-hover:bg-green-500 text-green-600 group-hover:text-white flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-green-500/30">
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6" aria-hidden="true">
+                      <Fragment set:html={icone[servizio.data.icona ?? 'leaf'] ?? icone['leaf']} />
+                    </svg>
+                  </div>
+                  <span class="text-5xl font-black text-green-50 group-hover:text-green-100/60 transition-colors leading-none select-none font-display" aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                </div>
+
+                <h2 class="text-xl font-semibold text-green-900 mb-3 group-hover:text-green-800 transition-colors leading-snug">
+                  {servizio.titoloStr.replace(/-/g, ' ')}
+                </h2>
+                <p class="text-sm text-green-700/65 leading-relaxed line-clamp-3">
+                  {servizio.data.descrizioneBreve}
+                </p>
+
+                <!-- Tags (se presenti) -->
+                {servizio.data.tags && servizio.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1.5 mt-4">
+                    {servizio.data.tags.slice(0, 3).map(tag => (
+                      <span class="text-[9px] font-bold tracking-wide uppercase bg-green-50 text-green-600 border border-green-100 px-2.5 py-1 rounded-full">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div class="mt-7 flex items-center justify-between">
+                  <span class="text-xs font-bold text-green-500 group-hover:text-green-600 transition-colors tracking-wider uppercase">
+                    Scopri il servizio
+                  </span>
+                  <div class="w-9 h-9 rounded-full border-2 border-green-100 group-hover:border-green-500 group-hover:bg-green-500 flex items-center justify-center transition-all duration-300">
+                    <svg class="w-4 h-4 text-green-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════ CTA ═══════════════════ -->
+  <section class="px-6 pb-28">
+    <div class="max-w-7xl mx-auto">
+      <div class="reveal relative bg-green-800 rounded-[2.5rem] overflow-hidden px-10 py-20 md:px-20 md:py-24">
+        <div class="absolute inset-0 opacity-10 pointer-events-none"
+             style="background-image: radial-gradient(circle at 25% 50%, #0C8E36 0%, transparent 50%), radial-gradient(circle at 75% 50%, #1F3F20 0%, transparent 50%)">
+        </div>
+        <div class="absolute right-0 bottom-0 pointer-events-none opacity-10 translate-x-1/4 translate-y-1/4" aria-hidden="true">
+          <svg viewBox="0 0 300 300" class="w-80 h-80" fill="white">
+            <path d="M150 20C150 20 20 80 20 170C20 240 78 290 150 290C222 290 280 240 280 170C280 80 150 20 150 20Z"/>
+          </svg>
+        </div>
+        <div class="relative text-center max-w-2xl mx-auto">
+          <div class="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-green-500/20 border border-green-400/30">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+            <span class="text-[10px] font-bold tracking-[0.25em] uppercase text-green-300">Inizia Oggi</span>
+          </div>
+          <h2 class="font-display text-4xl md:text-6xl text-white mb-6 leading-tight">
+            Trasforma il tuo spazio<br/>
+            <em class="text-green-300 font-light">in qualcosa di straordinario.</em>
+          </h2>
+          <p class="text-white/55 mb-10 text-sm leading-relaxed font-light">
+            Contattaci per un sopralluogo gratuito e ricevi un preventivo su misura entro 48 ore.
+          </p>
+          <a href="/contatti" class="inline-flex items-center gap-3 bg-green-500 hover:bg-green-400 text-white px-10 py-4 rounded-full font-semibold text-sm tracking-wide uppercase transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/40 hover:-translate-y-1">
+            Richiedi il Preventivo Gratuito
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</Layout>
+
+<style>
+  @keyframes scrollDot {
+    0%   { transform: translateY(-100%); }
+    100% { transform: translateY(400%); }
+  }
+</style>

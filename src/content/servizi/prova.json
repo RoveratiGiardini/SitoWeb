@@ -1,0 +1,11 @@
+{
+  "titolo": "Prova",
+  "descrizioneBreve": "In questo servizio di prova vedo la descrizione",
+  "inEvidenza": true,
+  "icona": "leaf",
+  "tags": [
+    "proviamotag"
+  ],
+  "immagine": "../../assets/images/servizi/prova/immagine.jpg",
+  "ordine": 99
+}

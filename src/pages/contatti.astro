@@ -1,0 +1,571 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+
+const contatti = await getEntry('impostazioni', 'contatti');
+const c = contatti?.data as any;
+
+// Valori di fallback se il singleton non è ancora compilato in Keystatic
+const tel1      = c?.telefono1       ?? '+39 388 242 5127';
+const tel1Label = c?.telefono1Label  ?? 'Cellulare';
+const tel2      = c?.telefono2       ?? '+39 335 693 9389';
+const tel2Label = c?.telefono2Label  ?? 'Fisso';
+const email     = c?.email           ?? 'info@roveratigiardini.com';
+const via       = c?.indirizzoVia    ?? "Stradello Ca' Nova 91";
+const citta     = c?.indirizzoCitta  ?? '44020 Dogato (FE)';
+const mapsUrl   = c?.googleMapsUrl   ?? 'https://maps.google.com/?q=Stradello+Ca+Nova+91+Dogato+Ferrara';
+const mapsEmbed = c?.googleMapsEmbed ?? '';
+
+const orari = c?.orari?.length ? c.orari : [
+  { giorno: 'Lunedì – Venerdì', orario: '8:00 – 18:00', aperto: true },
+  { giorno: 'Sabato',           orario: '8:00 – 13:00', aperto: true },
+  { giorno: 'Domenica',         orario: 'Chiuso',        aperto: false },
+];
+
+const comuni = c?.comuni?.length ? c.comuni
+  : ['Ferrara', 'Copparo', 'Comacchio', 'Argenta', 'Bondeno', 'Portomaggiore'];
+
+const descTerritorio = c?.descrizioneTerritorio
+  ?? 'Operiamo principalmente a <strong class="text-green-800">Ferrara e provincia</strong>, inclusi i comuni di Copparo, Comacchio, Argenta, Bondeno, Portomaggiore e dintorni.';
+
+const serviziForm = c?.serviziForm?.length ? c.serviziForm : [
+  { valore: 'progettazione-3d',   etichetta: 'Progettazione 3D' },
+  { valore: 'tree-climbing',      etichetta: 'Potatura / Tree Climbing' },
+  { valore: 'abbattimento',       etichetta: 'Abbattimento Piante' },
+  { valore: 'manutenzione',       etichetta: 'Manutenzione Verde' },
+  { valore: 'irrigazione',        etichetta: 'Impianti di Irrigazione' },
+  { valore: 'giardino-nuovo',     etichetta: 'Realizzazione Nuovo Giardino' },
+  { valore: 'altro',              etichetta: 'Altro / Non so ancora' },
+];
+
+// Stringa telefono per il link href (primo numero, solo cifre e +)
+const tel1Href = 'tel:' + tel1.replace(/\s/g, '');
+---
+
+<Layout
+  title="Contatti e Preventivo | Roverati Giardini"
+  description={`Contattaci per un sopralluogo gratuito e ricevi un preventivo su misura entro 48 ore. ${via}, ${citta}.`}
+>
+
+  <!-- ═══════════════════════════════════════════
+       HERO compatta
+  ═══════════════════════════════════════════ -->
+  <section class="relative bg-green-950 pt-36 pb-20 px-6 overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute -bottom-32 -right-32 w-[500px] h-[500px] rounded-full bg-green-800/25 blur-3xl"></div>
+      <div class="absolute top-0 left-1/3 w-[300px] h-[300px] rounded-full bg-green-600/10 blur-3xl"></div>
+    </div>
+    <!-- Foglia watermark -->
+    <svg class="absolute bottom-0 left-0 opacity-[0.04] pointer-events-none" viewBox="0 0 600 600" width="500" fill="none" aria-hidden="true">
+      <path d="M300 40C300 40 60 150 60 330C60 470 165 560 300 560C435 560 540 470 540 330C540 150 300 40 300 40Z" fill="white"/>
+      <path d="M300 120 L300 540" stroke="white" stroke-width="5" stroke-linecap="round"/>
+      <path d="M300 290 Q200 210 120 240" stroke="white" stroke-width="4" stroke-linecap="round"/>
+      <path d="M300 380 Q400 300 480 330" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+
+    <div class="relative max-w-4xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2.5 mb-7 px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+        <span class="text-[10px] font-bold tracking-[0.28em] uppercase text-green-400">Siamo qui per te</span>
+      </div>
+      <h1 class="font-display text-5xl md:text-7xl text-white leading-[0.9] mb-6">
+        Parliamo del<br/>
+        <em class="text-green-400 font-light">tuo progetto.</em>
+      </h1>
+      <p class="text-white/50 text-lg font-light max-w-md mx-auto leading-relaxed">
+        Sopralluogo gratuito e preventivo personalizzato entro 48 ore dalla richiesta.
+      </p>
+
+      <!-- Quick contact bar -->
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        <a href={tel1Href}
+          class="inline-flex items-center gap-2.5 bg-green-500/15 hover:bg-green-500/25 border border-green-500/25 hover:border-green-400/50 text-green-300 hover:text-green-200 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200">
+          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+          </svg>
+          {tel1}
+        </a>
+        <a href={`mailto:${email}`}
+          class="inline-flex items-center gap-2.5 bg-white/8 hover:bg-white/15 border border-white/15 hover:border-white/30 text-white/60 hover:text-white/90 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200">
+          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+          </svg>
+          {email}
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       MAIN CONTENT: Form + Sidebar
+  ═══════════════════════════════════════════ -->
+  <section class="py-20 px-6 bg-cloud">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+
+        <!-- ── FORM (left, 7 cols) ── -->
+        <div class="lg:col-span-7 reveal">
+
+          <div class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="w-8 h-px bg-green-500"></span>
+              <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-green-500">Richiesta Preventivo</span>
+            </div>
+            <h2 class="font-display text-3xl md:text-4xl text-green-900 leading-tight">
+              Raccontaci il tuo<br/><em class="font-light text-green-500">spazio verde</em>
+            </h2>
+          </div>
+
+          <!--
+            NETLIFY FORMS:
+            - L'attributo `data-netlify="true"` fa sì che Netlify intercetti il form al deploy e crei automaticamente l'endpoint.
+            - `name="preventivo"` è il nome con cui il form apparirà nella dashboard Netlify → Forms.
+            - Il campo nascosto `form-name` è obbligatorio per il submit via fetch/JS.
+            - Per ricevere le notifiche via email: Netlify Dashboard → Forms → preventivo → Settings → Form notifications.
+          -->
+          <form
+            id="contact-form"
+            name="preventivo"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            class="space-y-5"
+            novalidate
+          >
+            <!-- Honeypot anti-spam (nascosto agli utenti) -->
+            <p class="hidden" aria-hidden="true">
+              <label>Non compilare: <input name="bot-field" /></label>
+            </p>
+            <!-- Campo obbligatorio per submit via JS -->
+            <input type="hidden" name="form-name" value="preventivo" />
+
+            <!-- Nome + Cognome -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div class="form-group">
+                <label for="nome" class="form-label">Nome <span class="text-green-500">*</span></label>
+                <input type="text" id="nome" name="nome" required autocomplete="given-name"
+                  class="form-input" placeholder="Mario">
+              </div>
+              <div class="form-group">
+                <label for="cognome" class="form-label">Cognome <span class="text-green-500">*</span></label>
+                <input type="text" id="cognome" name="cognome" required autocomplete="family-name"
+                  class="form-input" placeholder="Rossi">
+              </div>
+            </div>
+
+            <!-- Email + Telefono -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div class="form-group">
+                <label for="email" class="form-label">Email <span class="text-green-500">*</span></label>
+                <input type="email" id="email" name="email" required autocomplete="email"
+                  class="form-input" placeholder="mario@esempio.it">
+              </div>
+              <div class="form-group">
+                <label for="telefono" class="form-label">Telefono</label>
+                <input type="tel" id="telefono" name="telefono" autocomplete="tel"
+                  class="form-input" placeholder="+39 000 000 0000">
+              </div>
+            </div>
+
+            <!-- Tipo di servizio (dinamico da Keystatic) -->
+            <div class="form-group">
+              <label for="servizio" class="form-label">Tipo di intervento <span class="text-green-500">*</span></label>
+              <div class="relative">
+                <select id="servizio" name="servizio" required class="form-input form-select appearance-none pr-10">
+                  <option value="" disabled selected>Seleziona un servizio…</option>
+                  {serviziForm.map((s: { valore: string; etichetta: string }) => (
+                    <option value={s.valore}>{s.etichetta}</option>
+                  ))}
+                </select>
+                <svg class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Tipo di cliente -->
+            <div class="form-group">
+              <label class="form-label">Sei un <span class="text-green-500">*</span></label>
+              <div class="flex flex-wrap gap-3 mt-2">
+                {[
+                  { value: 'privato',     label: 'Privato' },
+                  { value: 'azienda',     label: 'Azienda' },
+                  { value: 'ente',        label: 'Ente / Comune' },
+                  { value: 'condominio',  label: 'Condominio' },
+                ].map(opt => (
+                  <label class="cursor-pointer">
+                    <input type="radio" name="tipo_cliente" value={opt.value} class="sr-only peer" required />
+                    <span class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-green-100 bg-white text-sm font-medium text-green-800 peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-green-500 hover:border-green-300 transition-all duration-200 select-none">
+                      {opt.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <!-- Descrizione -->
+            <div class="form-group">
+              <label for="messaggio" class="form-label">Descrivi il progetto <span class="text-green-500">*</span></label>
+              <textarea id="messaggio" name="messaggio" required rows="5"
+                class="form-input resize-none"
+                placeholder="Descrivici il tuo spazio: tipologia, dimensioni indicative, cosa desideri realizzare o sistemare…"></textarea>
+              <p class="mt-1.5 text-xs text-green-600/50">Più dettagli ci fornisci, più accurato sarà il preventivo.</p>
+            </div>
+
+            <!-- Comune -->
+            <div class="form-group">
+              <label for="comune" class="form-label">Comune / Località</label>
+              <input type="text" id="comune" name="comune" autocomplete="address-level2"
+                class="form-input" placeholder="es. Ferrara, Copparo, Comacchio…">
+            </div>
+
+            <!-- Come ci hai trovato -->
+            <div class="form-group">
+              <label for="provenienza" class="form-label">Come ci hai trovato?</label>
+              <div class="relative">
+                <select id="provenienza" name="provenienza" class="form-input form-select appearance-none pr-10">
+                  <option value="" disabled selected>Seleziona…</option>
+                  <option value="google">Google / Motore di ricerca</option>
+                  <option value="passaparola">Passaparola</option>
+                  <option value="social">Social media</option>
+                  <option value="sito">Sito web</option>
+                  <option value="altro">Altro</option>
+                </select>
+                <svg class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Privacy -->
+            <div class="flex items-start gap-3 pt-2">
+              <div class="relative mt-0.5 flex-shrink-0">
+                <input type="checkbox" id="privacy" name="privacy" required class="sr-only peer" />
+                <label for="privacy"
+                  class="w-5 h-5 rounded-md border-2 border-green-200 bg-white flex items-center justify-center cursor-pointer transition-all duration-200 block peer-checked:bg-green-500 peer-checked:border-green-500">
+                  <svg class="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </label>
+              </div>
+              <label for="privacy" class="text-xs text-green-700/60 leading-relaxed cursor-pointer">
+                Ho letto e accetto la <a href="/privacy-policy" class="text-green-500 hover:text-green-600 underline underline-offset-2">Privacy Policy</a>. Acconsento al trattamento dei dati personali per ricevere risposta alla mia richiesta.
+              </label>
+            </div>
+
+            <!-- Submit -->
+            <div class="pt-2">
+              <button type="submit" id="submit-btn"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-green-500 hover:bg-green-600 text-white px-10 py-4 rounded-full font-semibold text-sm tracking-wide uppercase transition-all duration-300 hover:shadow-xl hover:shadow-green-500/40 hover:-translate-y-0.5 group">
+                <span id="btn-text">Invia Richiesta</span>
+                <span id="btn-icon" class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 group-hover:bg-white/30 transition-colors">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                  </svg>
+                </span>
+              </button>
+            </div>
+
+          </form>
+
+          <!-- Success message -->
+          <div id="success-msg" class="hidden mt-6 bg-green-50 border border-green-200 rounded-2xl p-6 flex items-start gap-4" role="alert">
+            <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-green-900 mb-1">Richiesta inviata con successo!</h3>
+              <p class="text-sm text-green-700/70 leading-relaxed">Grazie per averci contattato. Ti risponderemo entro 48 ore lavorative con un preventivo su misura.</p>
+            </div>
+          </div>
+
+          <!-- Error message -->
+          <div id="error-msg" class="hidden mt-6 bg-red-50 border border-red-200 rounded-2xl p-4 text-sm text-red-700" role="alert">
+            Si è verificato un errore nell'invio. Riprova oppure scrivici direttamente a
+            <a href={`mailto:${email}`} class="font-semibold underline">{email}</a>
+          </div>
+
+        </div>
+
+        <!-- ── SIDEBAR (right, 5 cols) ── -->
+        <aside class="lg:col-span-5 flex flex-col gap-5 reveal" style="transition-delay: 120ms">
+
+          <!-- Contact card (dati dinamici) -->
+          <div class="bg-green-800 rounded-3xl p-8 relative overflow-hidden">
+            <div class="absolute -bottom-16 -right-16 w-48 h-48 rounded-full bg-green-600/20 blur-3xl pointer-events-none"></div>
+            <div class="relative">
+              <h3 class="font-display text-2xl text-white mb-6">Contatti diretti</h3>
+              <div class="flex flex-col gap-5">
+
+                <!-- Telefono 1 -->
+                <a href={tel1Href} class="group flex items-center gap-4">
+                  <div class="w-11 h-11 rounded-xl bg-green-500/20 border border-green-400/20 group-hover:bg-green-500 flex items-center justify-center flex-shrink-0 transition-all duration-300">
+                    <svg class="w-5 h-5 text-green-300 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-green-400 font-bold tracking-[0.2em] uppercase mb-0.5">{tel1Label}</div>
+                    <div class="text-white text-sm font-medium">{tel1}</div>
+                    {tel2 && <div class="text-white/45 text-xs mt-0.5">{tel2Label}: {tel2}</div>}
+                  </div>
+                </a>
+
+                <!-- Email -->
+                <a href={`mailto:${email}`} class="group flex items-center gap-4">
+                  <div class="w-11 h-11 rounded-xl bg-green-500/20 border border-green-400/20 group-hover:bg-green-500 flex items-center justify-center flex-shrink-0 transition-all duration-300">
+                    <svg class="w-5 h-5 text-green-300 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-green-400 font-bold tracking-[0.2em] uppercase mb-0.5">Email</div>
+                    <div class="text-white text-sm font-medium">{email}</div>
+                  </div>
+                </a>
+
+                <!-- Indirizzo -->
+                <a href={mapsUrl} target="_blank" rel="noopener noreferrer" class="group flex items-start gap-4">
+                  <div class="w-11 h-11 rounded-xl bg-green-500/20 border border-green-400/20 group-hover:bg-green-500 flex items-center justify-center flex-shrink-0 transition-all duration-300 mt-0.5">
+                    <svg class="w-5 h-5 text-green-300 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-green-400 font-bold tracking-[0.2em] uppercase mb-0.5">Sede</div>
+                    <div class="text-white text-sm font-medium leading-snug">{via}</div>
+                    <div class="text-white/45 text-xs">{citta}</div>
+                  </div>
+                </a>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Orari (dinamici da Keystatic) -->
+          <div class="bg-white rounded-3xl p-7 border border-green-100">
+            <h3 class="text-sm font-bold text-green-900 tracking-wide mb-5 flex items-center gap-2">
+              <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Orari di disponibilità
+            </h3>
+            <div class="flex flex-col gap-0">
+              {orari.map((slot: { giorno: string; orario: string; aperto: boolean }) => (
+                <div class="flex justify-between items-center text-sm py-2.5 border-b border-green-50 last:border-0">
+                  <span class="text-green-800 font-medium">{slot.giorno}</span>
+                  <span class={slot.aperto ? 'text-green-600 font-semibold' : 'text-green-300 font-medium'}>
+                    {slot.orario}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div class="mt-5 flex items-center gap-2 text-xs text-green-600/70 bg-green-50 rounded-xl px-4 py-3">
+              <svg class="w-3.5 h-3.5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+              </svg>
+              Risposta alle richieste online entro 48 ore lavorative.
+            </div>
+          </div>
+
+          <!-- Area di intervento (dinamica) -->
+          <div class="bg-green-50 border border-green-100 rounded-3xl p-7">
+            <h3 class="text-sm font-bold text-green-900 tracking-wide mb-4 flex items-center gap-2">
+              <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+              </svg>
+              Area di intervento
+            </h3>
+            <p class="text-xs text-green-700/65 leading-relaxed mb-4" set:html={descTerritorio} />
+            <div class="flex flex-wrap gap-2">
+              {comuni.map((c: string) => (
+                <span class="text-[10px] bg-white text-green-700 font-bold tracking-wide uppercase px-3 py-1.5 rounded-full border border-green-200">{c}</span>
+              ))}
+            </div>
+          </div>
+
+          <!-- ISO badge -->
+          <div class="flex items-center gap-4 bg-green-900 rounded-2xl px-6 py-4">
+            <div class="w-12 h-12 rounded-xl bg-green-500/20 border border-green-400/20 flex items-center justify-center text-[9px] font-bold text-green-400 leading-tight text-center flex-shrink-0">
+              ISO<br/>9001
+            </div>
+            <div>
+              <div class="text-white text-sm font-semibold">Qualità Certificata ISO 9001:2015</div>
+              <div class="text-white/40 text-xs mt-0.5">Garanzia di professionalità e standard elevati</div>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       MAPPA (embed dinamico da Keystatic)
+  ═══════════════════════════════════════════ -->
+  <section class="px-6 pb-24 bg-cloud">
+    <div class="max-w-7xl mx-auto reveal">
+      <div class="rounded-3xl overflow-hidden border border-green-100 shadow-lg" style="height: 360px;">
+        {mapsEmbed ? (
+          <iframe
+            src={mapsEmbed}
+            width="100%"
+            height="100%"
+            style="border:0; filter: saturate(0.7) hue-rotate(80deg);"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title={`Posizione Roverati Giardini — ${via}, ${citta}`}
+          ></iframe>
+        ) : (
+          <!-- Placeholder se l'embed non è ancora configurato in Keystatic -->
+          <div class="w-full h-full bg-green-950 flex flex-col items-center justify-center gap-3 text-center px-6">
+            <svg class="w-10 h-10 text-green-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+            </svg>
+            <p class="text-green-400 text-sm font-medium">{via}, {citta}</p>
+            <p class="text-green-600 text-xs">Aggiungi l'URL embed di Google Maps in Keystatic → Impostazioni Contatti</p>
+          </div>
+        )}
+      </div>
+      <p class="text-center text-xs text-green-600/50 mt-3">
+        {via}, {citta} —
+        <a href={mapsUrl} target="_blank" rel="noopener noreferrer" class="text-green-500 hover:text-green-600 underline underline-offset-2">
+          Apri in Google Maps ↗
+        </a>
+      </p>
+    </div>
+  </section>
+
+</Layout>
+
+<style>
+  /* ── Form inputs ── */
+  .form-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: rgb(22 44 23 / 0.75);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.875rem 1.125rem;
+    border-radius: 0.875rem;
+    border: 1.5px solid #D4EBDA;
+    background: white;
+    color: #162C17;
+    font-size: 0.9rem;
+    font-family: var(--font-sans);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .form-input::placeholder { color: rgb(22 44 23 / 0.28); }
+  .form-input:hover  { border-color: #A8D7B6; }
+  .form-input:focus  { border-color: #0C8E36; box-shadow: 0 0 0 3px rgba(12, 142, 54, 0.12); }
+  .form-input.error  { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.1); }
+
+  .form-select { cursor: pointer; }
+
+  /* Checkbox privacy (peer deve essere fratello successivo al label) */
+  #privacy:checked + label { background: #0C8E36; border-color: #0C8E36; }
+  #privacy:checked + label svg { opacity: 1; }
+
+  /* Submit disabled */
+  #submit-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+</style>
+
+<script>
+  const form       = document.getElementById('contact-form') as HTMLFormElement | null;
+  const btn        = document.getElementById('submit-btn')   as HTMLButtonElement | null;
+  const btnText    = document.getElementById('btn-text')!;
+  const successMsg = document.getElementById('success-msg')!;
+  const errorMsg   = document.getElementById('error-msg')!;
+
+  if (!form || !btn) throw new Error('Form elements not found');
+
+  // ── Real-time validation ──────────────────────────────────────────────────
+  form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('.form-input').forEach(input => {
+    input.addEventListener('blur', () => {
+      if ((input as HTMLInputElement).required && !input.value.trim()) {
+        input.classList.add('error');
+      } else {
+        input.classList.remove('error');
+      }
+    });
+    input.addEventListener('input', () => input.classList.remove('error'));
+  });
+
+  // ── Submit via fetch → Netlify Forms ─────────────────────────────────────
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Validazione campi required
+    let valid = true;
+    form.querySelectorAll<HTMLInputElement>('[required]').forEach(field => {
+      const invalid = field.type === 'checkbox' ? !field.checked : !field.value.trim();
+      if (invalid) {
+        field.classList.add('error');
+        valid = false;
+      }
+    });
+
+    // Validazione radio "tipo_cliente"
+    const radioChecked = form.querySelector<HTMLInputElement>('input[name="tipo_cliente"]:checked');
+    if (!radioChecked) {
+      valid = false;
+      // Evidenzia il gruppo radio
+      form.querySelector<HTMLInputElement>('input[name="tipo_cliente"]')
+        ?.closest('.form-group')
+        ?.classList.add('error');
+    }
+
+    if (!valid) {
+      form.querySelector('.error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // Loading state
+    btn.disabled = true;
+    btnText.textContent = 'Invio in corso…';
+    errorMsg.classList.add('hidden');
+
+    try {
+      // Netlify Forms accetta application/x-www-form-urlencoded o FormData
+      const formData = new FormData(form);
+      const res = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData as unknown as Record<string, string>).toString(),
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      // Successo
+      form.style.display = 'none';
+      successMsg.classList.remove('hidden');
+      successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    } catch (err) {
+      console.error('Errore invio form:', err);
+      btn.disabled = false;
+      btnText.textContent = 'Invia Richiesta';
+      errorMsg.classList.remove('hidden');
+      errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+</script>
