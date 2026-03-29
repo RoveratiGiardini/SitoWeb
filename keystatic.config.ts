@@ -6,10 +6,7 @@ export default config({
   storage: isProd ? 
       {
         kind: 'github',
-        repo: {
-          owner: 'RoveratiGiardini',
-          name: 'SitoWeb',
-        },
+        repo: 'RoveratiGiardini/SitoWeb',
       }
     : {
         kind: 'local',
