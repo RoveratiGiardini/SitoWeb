@@ -382,17 +382,17 @@ const aspectClass: Record<string, string> = {
     aria-modal="true"
     aria-label="Visualizzatore immagini"
   >
-    <button id="lb-close" aria-label="Chiudi" class="absolute top-6 right-6 w-11 h-11 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white flex items-center justify-center transition-all duration-200">
+    <button id="lb-close" aria-label="Chiudi" class="absolute top-6 right-6 z-50 w-11 h-11 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white flex items-center justify-center transition-all duration-200">
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
       </svg>
     </button>
-    <button id="lb-prev" aria-label="Immagine precedente" class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white flex items-center justify-center transition-all duration-200">
+    <button id="lb-prev" aria-label="Immagine precedente" class="absolute left-4 top-1/2 -translate-y-1/2 z-50 w-11 h-11 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white flex items-center justify-center transition-all duration-200">
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
       </svg>
     </button>
-    <button id="lb-next" aria-label="Immagine successiva" class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white flex items-center justify-center transition-all duration-200">
+    <button id="lb-next" aria-label="Immagine successiva" class="absolute right-4 top-1/2 -translate-y-1/2 z-50 w-11 h-11 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white flex items-center justify-center transition-all duration-200">
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
       </svg>
@@ -514,7 +514,6 @@ const aspectClass: Record<string, string> = {
     lightbox.classList.remove('open');
     lightbox.classList.add('hidden');
     document.body.style.overflow = '';
-    setTimeout(() => lightbox.classList.remove('hidden'), 10);
   };
 
   const updateLightbox = () => {
