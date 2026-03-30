@@ -3,15 +3,10 @@ import { config, fields, collection, singleton } from '@keystatic/core';
 const isProd = import.meta.env.PROD;
 
 export default config({
-  storage: isProd ? 
-      {
-        kind: 'github',
-        repo: 'RoveratiGiardini/SitoWeb',
-      }
-    : {
-        kind: 'local',
-      },
-
+  storage: isProd ? { kind: 'cloud' } : { kind: 'local' },
+  cloud: {
+    project: 'sito-web/sitoweb', 
+  },
   // ════════════════════════════════════════════════════════
   // SINGLETON — una voce sola, modificabile dal CMS
   // ════════════════════════════════════════════════════════
