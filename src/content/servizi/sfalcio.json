@@ -1,0 +1,10 @@
+{
+  "titolo": "Sfalcio",
+  "inEvidenza": true,
+  "icona": "leaf",
+  "tags": [
+    "manutenzione del verde"
+  ],
+  "immagine": "../../assets/images/servizi/sfalcio/immagine.jpg",
+  "ordine": 99
+}
