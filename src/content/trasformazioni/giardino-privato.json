@@ -1,0 +1,9 @@
+{
+  "titolo": "Giardino Privato",
+  "location": "Ferrara",
+  "durata": "2 settimane",
+  "descrizione": "è stato riammodernato completamente il giardino",
+  "categoria": "Giardini Privati",
+  "immaginePrima": "../../assets/images/trasformazioni/giardino-privato/immaginePrima.png",
+  "immagineDopo": "../../assets/images/trasformazioni/giardino-privato/immagineDopo.png"
+}
