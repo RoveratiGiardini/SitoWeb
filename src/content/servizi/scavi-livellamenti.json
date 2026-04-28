@@ -1,0 +1,11 @@
+{
+  "titolo": "Scavi e Livellamenti",
+  "descrizioneBreve": "Movimento terra di precisione eseguito con escavatori semoventi. Siamo specializzati nello scavo di trincee per impiantistica, livellamento del suolo e preparazione del terreno per nuove piantumazioni o infrastrutture verdi.",
+  "inEvidenza": false,
+  "icona": "mdi:excavator",
+  "tags": [
+    "logistica, progettazione e consulenza"
+  ],
+  "immagine": "../../assets/images/servizi/scavi-livellamenti/immagine.jpg",
+  "ordine": 130
+}

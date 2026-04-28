@@ -1,0 +1,11 @@
+{
+  "titolo": "Valutazione di Stabilità e Perizie",
+  "descrizioneBreve": "Analisi tecniche e valutazioni VTA (Visual Tree Assessment) effettuate da Agronomi Specializzati. Redazione di perizie professionali per monitorare la salute degli alberi e prevenire rischi di cedimento strutturale.",
+  "inEvidenza": false,
+  "icona": "mdi:file-document-outline",
+  "tags": [
+    "arboricoltura e interventi specializzati"
+  ],
+  "immagine": "../../assets/images/servizi/valutazione-stabilita-perizie/immagine.jpg",
+  "ordine": 90
+}

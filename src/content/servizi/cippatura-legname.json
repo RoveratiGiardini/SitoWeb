@@ -1,0 +1,11 @@
+{
+  "titolo": "Cippatura del Legname",
+  "descrizioneBreve": "Riduzione volumetrica di ramaglie e tronchi tramite cippatura professionale effettuata direttamente sul posto. Il materiale ottenuto viene trasformato in pacciamatura biologica o sostanza organica per l'arricchimento del terreno.",
+  "inEvidenza": false,
+  "icona": "mdi:recycle",
+  "tags": [
+    "logistica, progettazione e consulenza"
+  ],
+  "immagine": "../../assets/images/servizi/cippatura-legname/immagine.jpg",
+  "ordine": 120
+}

@@ -1,0 +1,11 @@
+{
+  "titolo": "Diserbo Meccanico Professionale",
+  "descrizioneBreve": "Interventi di pulizia e diserbo eseguiti con mezzi meccanici dotati di spazzole pulitrici, raccoglitori semoventi e decespugliatori a reciprocatore. Soluzione ideale per la manutenzione di marciapiedi e aree pavimentate senza l'uso di chimica.",
+  "inEvidenza": false,
+  "icona": "mdi:broom",
+  "tags": [
+    "manutenzione del verde"
+  ],
+  "immagine": "../../assets/images/servizi/diserbo-meccanico-professionale/immagine.jpg",
+  "ordine": 50
+}

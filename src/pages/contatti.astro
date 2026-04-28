@@ -8,8 +8,8 @@ const c = contatti?.data as any;
 // Valori di fallback se il singleton non è ancora compilato in Keystatic
 const tel1      = c?.telefono1       ?? '+39 388 242 5127';
 const tel1Label = c?.telefono1Label  ?? 'Cellulare';
-const tel2      = c?.telefono2       ?? '+39 335 693 9389';
-const tel2Label = c?.telefono2Label  ?? 'Fisso';
+const tel2      = c?.telefono2;
+const tel2Label = c?.telefono2Label;
 const email     = c?.email           ?? 'info@roveratigiardini.com';
 const via       = c?.indirizzoVia    ?? "Stradello Ca' Nova 91";
 const citta     = c?.indirizzoCitta  ?? '44020 Dogato (FE)';

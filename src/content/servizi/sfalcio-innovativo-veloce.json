@@ -1,0 +1,11 @@
+{
+  "titolo": "Sfalcio Innovativo e Veloce",
+  "descrizioneBreve": "Servizi di sfalcio erba ad alta produttività eseguiti con sistemi di derivazione americana. Ideali per grandi superfici, garantiscono una finitura impeccabile e tempi di esecuzione ridotti grazie a macchinari ad elevata efficienza operativa.",
+  "inEvidenza": true,
+  "icona": "mdi:speedometer",
+  "tags": [
+    "manutenzione del verde"
+  ],
+  "immagine": "../../assets/images/servizi/sfalcio-innovativo-veloce/immagine.jpg",
+  "ordine": 10
+}

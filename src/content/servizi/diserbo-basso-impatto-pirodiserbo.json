@@ -1,0 +1,11 @@
+{
+  "titolo": "Diserbo a Basso Impatto (Pirodiserbo)",
+  "descrizioneBreve": "Controllo fisico delle erbe infestanti mediante la tecnica del pirodiserbo. Il calore generato elimina la vegetazione indesiderata in modo mirato e sostenibile, senza l'impiego di pesticidi o diserbanti chimici dannosi per l'ambiente.",
+  "inEvidenza": false,
+  "icona": "mdi:fire",
+  "tags": [
+    "manutenzione del verde"
+  ],
+  "immagine": "../../assets/images/servizi/diserbo-basso-impatto-pirodiserbo/immagine.jpg",
+  "ordine": 30
+}

@@ -1,0 +1,11 @@
+{
+  "titolo": "Smaltimento e Trasformazione",
+  "descrizioneBreve": "Servizio logistico integrato per il prelievo, trasporto e smaltimento dei residui vegetali. Utilizziamo autocarri dedicati per assicurare una gestione dei rifiuti verde rapida, pulita e conforme alle normative vigenti sulla tracciabilità.",
+  "inEvidenza": false,
+  "icona": "mdi:truck",
+  "tags": [
+    "logistica, progettazione e consulenza"
+  ],
+  "immagine": "../../assets/images/servizi/smaltimento-trasformazione/immagine.jpg",
+  "ordine": 110
+}
