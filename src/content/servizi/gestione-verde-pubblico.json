@@ -1,0 +1,11 @@
+{
+  "titolo": "Gestione del Verde Pubblico",
+  "descrizioneBreve": "Manutenzione completa e bonifica di parchi, aree urbane e reti stradali comunali o statali. Ogni intervento è pianificato ed eseguito con l'ausilio di segnaletica di sicurezza a norma per garantire l'incolumità dei cittadini e degli operatori.",
+  "inEvidenza": true,
+  "icona": "mdi:city",
+  "tags": [
+    "manutenzione del verde"
+  ],
+  "immagine": "../../assets/images/servizi/gestione-verde-pubblico/immagine.jpg",
+  "ordine": 20
+}

@@ -1,0 +1,11 @@
+{
+  "titolo": "Disboscamento e Bonifica",
+  "descrizioneBreve": "Servizi professionali di disboscamento per il ripristino di terreni incolti. Utilizziamo attrezzature specifiche per la rimozione di arbusti infestanti e alberi compromessi, restituendo valore e sicurezza alle aree trattate.",
+  "inEvidenza": false,
+  "icona": "mdi:tractor",
+  "tags": [
+    "arboricoltura e interventi specializzati"
+  ],
+  "immagine": "../../assets/images/servizi/disboscamento-bonifica/immagine.jpg",
+  "ordine": 80
+}

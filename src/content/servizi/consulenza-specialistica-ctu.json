@@ -1,0 +1,11 @@
+{
+  "titolo": "Consulenza Specialistica (CTU)",
+  "descrizioneBreve": "Servizi di Consulenza Tecnica d'Ufficio (CTU) per il Tribunale di Ferrara. Forniamo supporto tecnico-legale, stime danni e perizie specialistiche anche per collaborazioni tra studi professionali e privati.",
+  "inEvidenza": false,
+  "icona": "mdi:gavel",
+  "tags": [
+    "logistica, progettazione e consulenza"
+  ],
+  "immagine": "../../assets/images/servizi/consulenza-specialistica-ctu/immagine.jpg",
+  "ordine": 170
+}

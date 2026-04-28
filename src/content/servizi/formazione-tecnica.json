@@ -1,0 +1,11 @@
+{
+  "titolo": "Formazione Tecnica",
+  "descrizioneBreve": "Docenza qualificata in corsi di formazione professionale per il settore del verde e della protezione civile. Una solida esperienza didattica maturata dal 1995 al servizio di scuole superiori ed enti di certificazione.",
+  "inEvidenza": false,
+  "icona": "mdi:school",
+  "tags": [
+    "logistica, progettazione e consulenza"
+  ],
+  "immagine": "../../assets/images/servizi/formazione-tecnica/immagine.jpg",
+  "ordine": 180
+}
