@@ -2,6 +2,7 @@
 const currentYear = new Date().getFullYear();
 import { Image } from 'astro:assets';
 import isoLogo from '../assets/iso-9001-logo.png';
+import soaLogo from '../assets/soa-logo.jpg';
 import mainLogo from '../../public/logo-bianco.png';
 ---
 
@@ -95,14 +96,24 @@ import mainLogo from '../../public/logo-bianco.png';
       <div class="md:col-span-3">
         <h4 class="text-[10px] font-bold tracking-[0.25em] uppercase text-green-400 mb-6">Certificazioni</h4>
         <p class="text-white/55 text-sm mb-6 leading-relaxed">
-          Azienda certificata ISO 9001:2015 per la qualità dei servizi nel settore del verde.
+          Azienda certificata ISO 9001:2015 e in possesso di Attestazione SOA per l'esecuzione di opere pubbliche.
         </p>
-        <div class="block w-40 max-w-full">
-          <Image 
-            src={isoLogo} 
-            alt="Certificazione ISO 9001:2015" 
-            class="w-full h-auto object-contain"
-          />
+        
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="h-20 w-auto bg-white rounded-xl p-1 flex items-center justify-center overflow-hidden">
+            <Image 
+              src={isoLogo} 
+              alt="Certificazione ISO 9001:2015" 
+              class="h-full w-auto object-contain"
+            />
+          </div>
+          <div class="h-20 w-auto bg-white rounded-xl p-1 flex items-center justify-center overflow-hidden">
+            <Image 
+              src={soaLogo} 
+              alt="Attestazione SOA" 
+              class="h-full w-auto object-contain"
+            />
+          </div>
         </div>
 
         <a href="/contatti" class="mt-8 flex items-center gap-3 group" aria-label="Richiedi un preventivo gratuito">

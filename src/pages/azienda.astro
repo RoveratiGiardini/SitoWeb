@@ -9,19 +9,19 @@ import sfondoSvg from '../assets/sfondo.svg';
 
 // ── Fallback dati ─────────────────────────────────────────────────────────
 const storiaIntro = d?.storiaIntro?.length ? d.storiaIntro : [
-  "Le radici di Roverati Giardini affondano nel 1964, quando la famiglia avvia l'attività con un frutteto dedicato alla coltivazione diretta. Un legame crudo e autentico con la terra.",
-  "Nel 1996 avviene la svolta decisiva: l'azienda ottiene la qualifica ufficiale per il giardinaggio professionale. L'esperienza decennale maturata in ambito agricolo si trasforma in architettura e cura del verde ornamentale.",
+  "Le radici di Roverati Giardini affondano negli anni '60, quando la famiglia avvia l'attività con un frutteto e un vivaio dedicati alla coltivazione diretta. Un legame crudo, autentico e pratico con la terra e la crescita delle piante.",
+  "Nel 1996 avviene la svolta decisiva: l'azienda ottiene la qualifica ufficiale per il giardinaggio professionale. L'esperienza decennale maturata sul campo in ambito agricolo e vivaistico si trasforma in architettura e cura del verde ornamentale.",
   "Tre generazioni si sono avvicendate, portando ciascuna il proprio contributo. Non siamo una multinazionale del verde: siamo artigiani cresciuti lavorando la terra, e in ogni giardino che curiamo si vede."
 ];
 
 const timeline = d?.timeline?.length ? d.timeline : [
-  { anno: '1964', titolo: 'Le origini: il frutteto',    testo: "L'azienda muove i primi passi. Viene avviata l'attività agricola basata sulla coltivazione diretta di un frutteto, ponendo le basi della nostra conoscenza botanica.", accento: true },
-  { anno: '1996', titolo: 'Il giardinaggio professionale', testo: "Otteniamo ufficialmente la qualifica per il giardinaggio. La nostra vocazione agricola si evolve per abbracciare la progettazione e la manutenzione del verde a 360 gradi.", accento: true },
+  { anno: '1964', titolo: 'Le origini: frutteto e vivaio', testo: "L'azienda muove i primi passi. Viene avviata l'attività agricola basata sulla coltivazione diretta di un frutteto e la gestione del vivaio di famiglia, ponendo le basi della nostra conoscenza botanica.", accento: true },
+  { anno: '1994', titolo: 'Il giardinaggio professionale', testo: "Otteniamo ufficialmente la qualifica per il giardinaggio. La nostra vocazione agricola e vivaistica si evolve per abbracciare la progettazione e la manutenzione del verde a 360 gradi.", accento: true },
   { anno: '2000', titolo: 'Primi appalti pubblici',       testo: "Espandiamo il nostro raggio d'azione vincendo le prime gare pubbliche. Iniziamo a prenderci cura del verde urbano e istituzionale, dimostrando affidabilità operativa su larga scala.", accento: false },
   { anno: '2018', titolo: 'Progettazione 3D',          testo: "Integriamo il servizio di progettazione digitale con render fotorealistici: i clienti vedono il loro giardino finito prima ancora che inizino i lavori.", accento: false },
-  { anno: '2020', titolo: 'Azienda leader della regione', testo: "Consolidiamo la nostra presenza sul territorio diventando un punto di riferimento per il settore paesaggistico regionale. Il team si struttura per gestire cantieri di crescente complessità.", accento: false },
+  { anno: '2020', titolo: 'Punto di riferimento regionale', testo: "Consolidiamo la nostra presenza sul territorio diventando una realtà di riferimento per il settore paesaggistico locale. Il team si struttura per gestire cantieri di crescente complessità.", accento: false },
   { anno: '2025', titolo: 'Certificazione ISO 9001',   testo: "Otteniamo la certificazione ISO 9001:2015, formalizzando i processi e il controllo qualità su ogni intervento. Un impegno verso i clienti che manteniamo ancora oggi.", accento: false },
-  { anno: 'Oggi', titolo: 'Oltre 1.200 progetti',       testo: "Tre generazioni, una squadra di professionisti e oltre 60 anni di storia legata alla terra. Continuiamo a crescere rimanendo fedeli ai nostri valori.", accento: true },
+  { anno: 'Oggi', titolo: 'Attestazione SOA e capacità operativa', testo: "Otteniamo l'attestazione SOA per l'esecuzione di opere pubbliche, a coronamento di una crescita che ci ha visto gestire oltre 500 cantieri nei soli primi sette mesi del 2026.", accento: true },
 ];
 
 const valori = d?.valori?.length ? d.valori : [
@@ -34,9 +34,9 @@ const valori = d?.valori?.length ? d.valori : [
 const teamIntroTesto = d?.teamIntroTesto ?? 'Tre titolari, una famiglia, e una squadra di professionisti che condividono la stessa visione.';
 
 const teamMembers = d?.teamMembers?.length ? d.teamMembers : [
-  { nome: 'Marco Roverati', ruolo: 'Fondatore & Responsabile Tecnico', bio: "Una vita dedicata alle piante. Ha vissuto la transizione dal frutteto originale alla cura del verde ornamentale, trasmettendo la sua esperienza a tutta la squadra.", specialita: ['Consulenza botanica', 'Abbattimenti', 'Direzione tecnica'], foto: null },
-  { nome: 'Luca Roverati',  ruolo: 'Direttore Operativo',              bio: "Seconda generazione. Ha portato in azienda la progettazione 3D e la certificazione ISO, modernizzando i processi senza perdere l'anima artigianale.", specialita: ['Progettazione 3D', 'Gestione cantieri', 'ISO 9001'], foto: null },
-  { nome: 'Sara Roverati',  ruolo: 'Responsabile Clienti & Amm.',      bio: "Il volto dell'azienda verso i clienti. Coordina preventivi, follow-up e la soddisfazione post-lavoro, garantendo che ogni progetto superi le aspettative.", specialita: ['Coordinamento', 'Preventivi', 'Relazioni clienti'], foto: null },
+  { nome: 'Luca Roverati', ruolo: 'Fondatore & Responsabile Tecnico', bio: "Una vita dedicata alle piante. Ha vissuto la transizione dal frutteto e dal vivaio originale alla cura del verde ornamentale, trasmettendo la sua esperienza a tutta la squadra.", specialita: ['Consulenza botanica', 'Abbattimenti', 'Direzione tecnica'], foto: null },
+  { nome: 'Nicola Roverati',  ruolo: 'Direttore Operativo',              bio: "Seconda generazione. Cresciuto tra le piante del vivaio di famiglia, ha integrato questa solida conoscenza pratica con la progettazione 3D e la certificazione ISO, modernizzando i processi senza perdere l'impronta artigianale.", specialita: ['Progettazione 3D', 'Gestione cantieri', 'ISO 9001'], foto: null },
+  { nome: 'Ilaria Boldrini',  ruolo: 'Responsabile Clienti & Amm.',      bio: "Il volto dell'azienda verso i clienti. Coordina preventivi, follow-up e la soddisfazione post-lavoro, garantendo che ogni progetto superi le aspettative.", specialita: ['Coordinamento', 'Preventivi', 'Relazioni clienti'], foto: null },
 ];
 
 // — Foto storiche — risoluzione dinamica tramite import.meta.glob

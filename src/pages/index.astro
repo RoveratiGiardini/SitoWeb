@@ -8,7 +8,7 @@ import { Icon } from 'astro-icon/components';
 import { getCollection, getEntry } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
-import logoAeronautica from '../assets/partners/aeronautica.svg';
+import logoAeronautica from '../assets/partners/aeronautica.png';
 import logoBorsetti from '../assets/partners/borsetti.png';
 import logoTeatro from '../assets/partners/comunale-ferrara.svg';
 import logoDiscoVerde from '../assets/partners/discoverde.png';
@@ -17,6 +17,7 @@ import logoExpo from '../assets/partners/expo-fe.svg';
 import logoPanathlon from '../assets/partners/panathlon.png';
 import logoWelding from '../assets/partners/welding-duebi.svg';
 import logoOspedale from '../assets/partners/ospedale.png';
+import logoAvis from '../assets/partners/avis.svg';
 
 import logoImg from '../assets/icona.jpeg';
 import sfondoSvg from '../assets/sfondo.svg';
@@ -50,6 +51,7 @@ const partners: Partner[] = [
   { name: 'Panathlon', logo: logoPanathlon },
   { name: 'Welding Duebi', logo: logoWelding },
   { name: 'Ospedale di Cona', logo: logoOspedale },
+  { name: 'AVIS', logo: logoAvis },
 ];
 ---
 
@@ -68,7 +70,7 @@ const partners: Partner[] = [
             'Manutenzione Professionale',
             'Impianti di Irrigazione',
             'ISO 9001 Certificata',
-            'Dal 1974',
+            'Dagli anni \'60',
             'Ferrara e Provincia',
           ].map(item => (
             <span class="inline-flex items-center gap-4 px-8 text-sm font-semibold tracking-wide text-white/90 uppercase">
@@ -104,7 +106,7 @@ const partners: Partner[] = [
           <svg viewBox="0 0 120 120" class="w-full h-full animate-[spin_18s_linear_infinite] absolute inset-0" fill="none">
             <path id="textCircle" d="M 60,60 m -45,0 a 45,45 0 1,1 90,0 a 45,45 0 1,1 -90,0" fill="none"/>
             <text font-size="11" fill="rgba(255,255,255,0.55)" font-family="DM Sans, sans-serif" font-weight="500" letter-spacing="3.5">
-              <textPath href="#textCircle">DAL 1974 · FERRARA · VERDE ·&nbsp;</textPath>
+              <textPath href="#textCircle">DAL 1960 · FERRARA · VERDE ·&nbsp;</textPath>
             </text>
           </svg>
           <Image 
@@ -118,7 +120,7 @@ const partners: Partner[] = [
       </div>
 
       <div class="hero-eyebrow inline-flex items-center gap-2.5 mb-7 px-4 py-2 bg-white/8 border border-white/15 backdrop-blur-md text-white/75 text-[8px] md:text-[12px] font-bold tracking-[0.28em] uppercase rounded-full">        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse flex-shrink-0"></span>
-        Ferrara e Provincia — Dal 1974
+        Ferrara e Provincia — Dal 1960
       </div>
       <h1 class="hero-headline font-display leading-[1.1] md:leading-[0.92] tracking-[-0.02em] mb-10
                  text-6xl md:text-[clamp(4.5rem,7vw,6.5rem)] text-white">
