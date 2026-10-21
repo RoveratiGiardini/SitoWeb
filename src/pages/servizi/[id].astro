@@ -190,7 +190,7 @@ const icone: Record<string, string> = {
               {[
                 { icon: '✓', label: 'Sopralluogo gratuito' },
                 { icon: '⏱', label: 'Preventivo in 48 ore' },
-                { icon: '★', label: 'Qualità ISO 9001' },
+                { icon: '★', label: 'Qualità ISO' },
               ].map(item => (
                 <div class="flex items-center gap-3 bg-green-50 rounded-2xl px-4 py-3.5 border border-green-100">
                   <span class="text-green-500 font-bold text-base flex-shrink-0">{item.icon}</span>
@@ -226,14 +226,14 @@ const icone: Record<string, string> = {
             <div class="w-12 h-12 flex-shrink-0 flex items-center justify-center overflow-hidden">
               <Image 
                 src={isoLogo} 
-                alt="Certificazione ISO 9001:2015" 
+                alt="Certificazione ISO" 
                 width={48}
                 height={48}
                 class="w-full h-full object-contain"
               />
             </div>
             <div>
-              <div class="text-white text-xs font-semibold">Qualità Certificata ISO 9001:2015</div>
+              <div class="text-white text-xs font-semibold">Qualità Certificata ISO</div>
               <div class="text-white/40 text-[10px] mt-0.5">Standard elevati su ogni intervento</div>
             </div>
           </div>
