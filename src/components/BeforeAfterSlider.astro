@@ -17,7 +17,7 @@ if (!beforeImg || !afterImg) {
 ---
 
 <div 
-  class="before-after-container relative w-full aspect-[4/3] md:aspect-[16/9] overflow-hidden rounded-3xl shadow-2xl cursor-col-resize select-none group/slider"
+  class="before-after-container relative w-full aspect-[4/3] md:aspect-[16/9] overflow-hidden rounded-3xl shadow-2xl cursor-col-resize select-none touch-none group/slider"
   data-initial={initialPosition}
   role="slider"
   aria-label={`Comparazione prima/dopo: ${altText}`}
@@ -29,18 +29,20 @@ if (!beforeImg || !afterImg) {
   <Image 
     src={afterImg} 
     alt={`Dopo l'intervento: ${altText}`}
-    class="absolute inset-0 w-full h-full object-cover"
+    class="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
     widths={[400, 800, 1200]}
     sizes="(max-width: 768px) 100vw, 50vw"
+    draggable="false"
   />
   
-  <div class="before-layer absolute inset-0 overflow-hidden" style={`clip-path: inset(0 ${100 - initialPosition}% 0 0)`}>
+  <div class="before-layer absolute inset-0 overflow-hidden pointer-events-none" style={`clip-path: inset(0 ${100 - initialPosition}% 0 0)`}>
     <Image 
       src={beforeImg} 
       alt={`Prima dell'intervento: ${altText}`}
-      class="absolute inset-0 w-full h-full object-cover"
+      class="absolute inset-0 w-full h-full object-cover select-none"
       widths={[400, 800, 1200]}
       sizes="(max-width: 768px) 100vw, 50vw"
+      draggable="false"
     />
   </div>
 
@@ -85,16 +87,14 @@ if (!beforeImg || !afterImg) {
 </style>
 
 <script>
-  let activeHandlers: { remove: () => void }[] = [];
-
   function initSliders() {
-    // Pulisce i vecchi listener globali ad ogni inizializzazione per evitare memory leak
-    activeHandlers.forEach(handler => handler.remove());
-    activeHandlers = [];
-
     const containers = document.querySelectorAll<HTMLElement>('.before-after-container');
 
     containers.forEach(container => {
+      // Evita doppia inizializzazione se Astro ri-esegue lo script
+      if (container.dataset.initialized === 'true') return;
+      container.dataset.initialized = 'true';
+
       const beforeLayer = container.querySelector<HTMLElement>('.before-layer');
       const handle = container.querySelector<HTMLElement>('.handle');
       const dividerLine = container.querySelector<HTMLElement>('.divider-line');
@@ -104,9 +104,7 @@ if (!beforeImg || !afterImg) {
 
       let isDragging = false;
       let hasInteracted = false;
-
-      const initial = parseFloat(container.dataset.initial || '45');
-      let currentPct = initial;
+      let currentPct = parseFloat(container.dataset.initial || '45');
 
       const setPosition = (pct: number) => {
         currentPct = Math.max(2, Math.min(98, pct));
@@ -117,64 +115,60 @@ if (!beforeImg || !afterImg) {
         container.setAttribute('aria-valuenow', String(Math.round(currentPct)));
       };
 
-      const pctFromX = (x: number) => {
+      const updateFromX = (clientX: number) => {
         const rect = container.getBoundingClientRect();
-        return ((x - rect.left) / rect.width) * 100;
+        const pct = ((clientX - rect.left) / rect.width) * 100;
+        setPosition(pct);
       };
 
-      const onInteract = () => {
+      const dismissHint = () => {
         if (!hasInteracted) {
           hasInteracted = true;
           hintOverlay.style.opacity = '0';
-          setTimeout(() => hintOverlay.style.display = 'none', 500);
+          setTimeout(() => { hintOverlay.style.display = 'none'; }, 500);
         }
       };
 
-      // Gestione del Drag Container
-      const startDrag = (e: MouseEvent | TouchEvent) => {
+      container.addEventListener('pointerdown', (e) => {
         isDragging = true;
-        onInteract();
-        const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-        setPosition(pctFromX(clientX));
-      };
+        dismissHint();
+        // Cattura tutti i movimenti del puntatore su questo elemento, anche fuori dai bordi
+        container.setPointerCapture(e.pointerId);
+        updateFromX(e.clientX);
+      });
 
-      const stopDrag = () => { isDragging = false; };
-      
-      const moveDrag = (e: MouseEvent | TouchEvent) => {
+      container.addEventListener('pointermove', (e) => {
         if (!isDragging) return;
-        const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-        setPosition(pctFromX(clientX));
+        updateFromX(e.clientX);
+      });
+
+      const endDrag = (e: PointerEvent) => {
+        if (!isDragging) return;
+        isDragging = false;
+        if (container.hasPointerCapture(e.pointerId)) {
+          container.releasePointerCapture(e.pointerId);
+        }
       };
 
-      // Container Listeners
-      container.addEventListener('mousedown', startDrag);
-      container.addEventListener('touchstart', startDrag, { passive: true });
+      container.addEventListener('pointerup', endDrag);
+      container.addEventListener('pointercancel', endDrag);
 
       container.addEventListener('keydown', (e) => {
         const step = e.shiftKey ? 10 : 2;
-        if (e.key === 'ArrowLeft') { onInteract(); setPosition(currentPct - step); e.preventDefault(); }
-        if (e.key === 'ArrowRight') { onInteract(); setPosition(currentPct + step); e.preventDefault(); }
-      });
-
-      // Window Listeners gestiti per il cleanup
-      window.addEventListener('mouseup', stopDrag);
-      window.addEventListener('mousemove', moveDrag as any);
-      window.addEventListener('touchend', stopDrag);
-      window.addEventListener('touchmove', moveDrag as any, { passive: false });
-
-      // Salviamo i riferimenti per poterli distruggere
-      activeHandlers.push({
-        remove: () => {
-          window.removeEventListener('mouseup', stopDrag);
-          window.removeEventListener('mousemove', moveDrag as any);
-          window.removeEventListener('touchend', stopDrag);
-          window.removeEventListener('touchmove', moveDrag as any);
+        if (e.key === 'ArrowLeft') { 
+          dismissHint(); 
+          setPosition(currentPct - step); 
+          e.preventDefault(); 
+        }
+        if (e.key === 'ArrowRight') { 
+          dismissHint(); 
+          setPosition(currentPct + step); 
+          e.preventDefault(); 
         }
       });
     });
   }
 
-  // Inizializza subito e poi ri-lega agli eventi di pagina di Astro
   initSliders();
   document.addEventListener('astro:page-load', initSliders);
 </script>
