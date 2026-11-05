@@ -2,26 +2,45 @@
 # FILE _redirects - ROVERATIGIARDINI.COM
 # ==========================================
 
-/portfolio                                               /galleria 301
-/corsi-di-formazione                                     /servizi/formazione-tecnica/ 301
-/potature-e-abbattimento                                 /servizi/potature-abbattimenti-quota/ 301
+# --- REDIRECT 301 SERVIZI E PAGINE CORE (Recupero Link Equity) ---
+/portfolio                                  /galleria                                    301!
+/portfolio/                                 /galleria                                    301!
+/corsi-di-formazione                        /servizi/formazione-tecnica/                 301!
+/corsi-di-formazione/                       /servizi/formazione-tecnica/                 301!
+/potature-e-abbattimento                    /servizi/potature-abbattimenti-quota/        301!
+/potature-e-abbattimento/                   /servizi/potature-abbattimenti-quota/        301!
+/manutenzione-e-realizzazione-aree-verdi    /servizi/                                    301!
+/manutenzione-e-realizzazione-aree-verdi/   /servizi/                                    301!
+/progettazione-3d-fotografica               /servizi/                                    301!
+/progettazione-3d-fotografica/              /servizi/                                    301!
+/perizie-di-stabilita-degli-alberi-vta      /servizi/tree-climbing-certificato/          301!
+/perizie-di-stabilita-degli-alberi-vta/     /servizi/tree-climbing-certificato/          301!
+/piante-e-vivaio                            /                                            301!
+/piante-e-vivaio/                           /                                            301!
 
-/allestimento-area-piscina                               /404 410
-/installazione-di-sistemi-di-dissuasione-antipiccione    /404 410
-/manutenzione-e-realizzazione-aree-verdi                 /404 410
-/perizie-di-stabilita-degli-alberi-vta                   /404 410
-/piante-e-vivaio                                         /404 410
-/piscine-fuori-terra-seminterrate-interrate              /404 410
-/progettazione-3d-fotografica                            /404 410
-/realizzazione-piscine                                   /404 410
+# Uniformazione trailing slash servizi
+/servizi/sfalcio-innovativo-veloce          /servizi/sfalcio-innovativo-veloce/          301!
+/servizi/diserbo-meccanico-professionale    /servizi/diserbo-meccanico-professionale/    301!
+/servizi/gestione-verde-pubblico            /servizi/gestione-verde-pubblico/            301!
+/servizi/diserbo-basso-impatto-pirodiserbo  /servizi/diserbo-basso-impatto-pirodiserbo/  301!
 
-# --- ARTICOLI DEL BLOG ---
+# --- PAGINE DISMESSE (Piscine & Antipiccione -> 410 Gone) ---
+/allestimento-area-piscina                  /404 410
+/allestimento-area-piscina/                 /404 410
+/installazione-di-sistemi-di-dissuasione-antipiccione  /404 410
+/installazione-di-sistemi-di-dissuasione-antipiccione/ /404 410
+/piscine-fuori-terra-seminterrate-interrate /404 410
+/piscine-fuori-terra-seminterrate-interrate/ /404 410
+/realizzazione-piscine                      /404 410
+/realizzazione-piscine/                     /404 410
+
+# --- ARTICOLI DEL BLOG VECCHIO (410 Gone) ---
 /come-costruire-la-piscina-adatta-al-proprio-giardino    /404 410
 /come-creare-un-giardino-verticale                       /404 410
 /come-creare-un-orto-sul-balcone                         /404 410
-/come-effettuare-potatura-piante-perfetta                /404 410
+/come-effettuare-potatura-piante-perfetta                /servizi/potature-abbattimenti-quota/ 301!
 /come-preparare-il-tuo-giardino-per-linverno             /404 410
-/come-prevenire-erbacce                                  /404 410
+/come-prevenire-erbacce                                  /servizi/diserbo-basso-impatto-pirodiserbo/ 301!
 /come-risolvere-i-problemi-di-crescita-delle-piante      /404 410
 /creare-giardino-perfetto                                /404 410
 /giardino-curato-durante-autunno-inverno                 /404 410
@@ -35,19 +54,10 @@
 /proteggere-le-piante-freddo-parassiti-malattie          /404 410
 /scegliere-complementi-arredo-giardino                   /404 410
 
-# --- ARCHIVI BLOG E TASSONOMIE ---
-/blog                                                    /404 410
-/category                                                /404 410
-/blog/giardinaggio                                       /404 410
-/blog/manutenzione                                       /404 410
-/blog/piscine                                            /404 410
-/category/giardinaggio                                   /404 410
-/category/manutenzione                                   /404 410
-/category/piscine                                        /404 410
-
-# --- RIMOZIONE DEFINITIVA VECCHIA STRUTTURA WP ---
-/bwg_tag/* /404 410
-/ngg_tag/* /404 410
-/bwg_gallery/* /404 410
-/category/* /404 410
-/portfolio/gallery                                       /404 410
+# --- ARCHIVI E STRUTTURA VECCHIO WP (410 Gone) ---
+/blog/*             /404 410
+/category/*         /404 410
+/bwg_tag/*          /404 410
+/ngg_tag/*          /404 410
+/bwg_gallery/*      /404 410
+/portfolio/gallery  /404 410
