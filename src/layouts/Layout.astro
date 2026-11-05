@@ -11,6 +11,7 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -22,6 +23,7 @@ const { title, description } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#0C8E36" />
+    <link rel="canonical" href={canonicalURL} />
 
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;" />
 
@@ -32,6 +34,7 @@ const { title, description } = Astro.props;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
 
     <slot name="head" />
 
@@ -52,7 +55,6 @@ const { title, description } = Astro.props;
       let observer: IntersectionObserver;
 
       function initScrollReveal() {
-        // Disconnette il vecchio observer se esiste (pulizia ad ogni cambio pagina)
         if (observer) {
           observer.disconnect();
         }
@@ -62,7 +64,6 @@ const { title, description } = Astro.props;
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                // Smette di osservare l'elemento una volta rivelato
                 observer.unobserve(entry.target);
               }
             });
@@ -73,14 +74,12 @@ const { title, description } = Astro.props;
         document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
       }
 
-      // 'astro:page-load' gestisce sia il primo avvio che le navigazioni successive
       document.addEventListener('astro:page-load', initScrollReveal);
     </script>
   </body>
 </html>
 
 <style is:global>
-  /* Previene il ricalcolo continuo dello scroll che genera il warning in console */
   html, body {
     overflow-anchor: none;
   }
